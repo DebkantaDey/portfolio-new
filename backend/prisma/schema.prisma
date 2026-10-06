@@ -1,0 +1,282 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id           String    @id @default(uuid())
+  name         String
+  email        String    @unique
+  passwordHash String
+  role         String    @default("ADMIN")
+  avatar       String?
+  lastLoginAt  DateTime?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  @@map("users")
+}
+
+model Profile {
+  id                 String   @id @default(uuid())
+  fullName           String
+  professionalTitle  String
+  shortBio           String
+  longBio            String
+  profileImage       String?
+  location           String
+  email              String
+  phone              String?
+  availabilityStatus String   @default("Available for exciting opportunities")
+  yearsOfExperience  Int      @default(5)
+  resumeUrl          String?
+  githubUrl          String?
+  linkedinUrl        String?
+  portfolioUrl       String?
+  websiteUrl         String?
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  @@map("profiles")
+}
+
+model Skill {
+  id           String   @id @default(uuid())
+  name         String
+  category     String
+  proficiency  Int      @default(80)
+  icon         String?
+  description  String?
+  displayOrder Int      @default(0)
+  featured     Boolean  @default(false)
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@map("skills")
+}
+
+model Experience {
+  id               String    @id @default(uuid())
+  companyName      String
+  companyLogo      String?
+  companyWebsite   String?
+  jobTitle         String
+  employmentType   String    @default("Full-time")
+  location         String
+  startDate        DateTime
+  endDate          DateTime?
+  currentlyWorking Boolean   @default(false)
+  description      String
+  responsibilities String[]  @default([])
+  achievements     String[]  @default([])
+  technologiesUsed String[]  @default([])
+  displayOrder     Int       @default(0)
+  isFeatured       Boolean   @default(false)
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+
+  @@map("experiences")
+}
+
+model Education {
+  id                String    @id @default(uuid())
+  institution       String
+  institutionLogo   String?
+  degree            String
+  fieldOfStudy      String
+  location          String
+  startDate         DateTime
+  endDate           DateTime?
+  currentlyStudying Boolean   @default(false)
+  description       String?
+  achievements      String[]  @default([])
+  grade             String?
+  website           String?
+  displayOrder      Int       @default(0)
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  @@map("educations")
+}
+
+model Project {
+  id               String    @id @default(uuid())
+  title            String
+  slug             String    @unique
+  shortDescription String
+  fullDescription  String
+  featuredImage    String
+  galleryImages    String[]  @default([])
+  technologies     String[]  @default([])
+  category         String
+  projectType      String    @default("Web Application")
+  liveUrl          String?
+  githubUrl        String?
+  caseStudyUrl     String?
+  startDate        DateTime?
+  endDate          DateTime?
+  status           String    @default("Completed")
+  challenges       String?
+  solutions        String?
+  keyFeatures      String[]  @default([])
+  responsibilities String?
+  displayOrder     Int       @default(0)
+  featured         Boolean   @default(false)
+  published        Boolean   @default(true)
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+
+  @@map("projects")
+}
+
+model Certification {
+  id                  String    @id @default(uuid())
+  title               String
+  issuingOrganization String
+  organizationLogo    String?
+  issueDate           DateTime
+  expirationDate      DateTime?
+  credentialId        String?
+  credentialUrl       String?
+  certificateImage    String?
+  description         String?
+  displayOrder        Int       @default(0)
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
+
+  @@map("certifications")
+}
+
+model Achievement {
+  id           String    @id @default(uuid())
+  title        String
+  description  String
+  icon         String?
+  image        String?
+  date         DateTime?
+  organization String?
+  url          String?
+  displayOrder Int       @default(0)
+  featured     Boolean   @default(false)
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  @@map("achievements")
+}
+
+model Service {
+  id               String   @id @default(uuid())
+  title            String
+  slug             String   @unique
+  icon             String?
+  shortDescription String
+  fullDescription  String
+  features         String[] @default([])
+  technologies     String[] @default([])
+  displayOrder     Int      @default(0)
+  featured         Boolean  @default(false)
+  isActive         Boolean  @default(true)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  @@map("services")
+}
+
+model CareerOpportunity {
+  id             String    @id @default(uuid())
+  companyName    String
+  companyLogo    String?
+  jobTitle       String
+  location       String
+  country        String?
+  remoteType     String    @default("Remote")
+  employmentType String    @default("Full-time")
+  jobDescription String
+  requiredSkills String[]  @default([])
+  salaryRange    String?
+  jobUrl         String?
+  applicationUrl String
+  companyWebsite String?
+  postedDate     DateTime  @default(now())
+  closingDate    DateTime?
+  status         String    @default("Open")
+  featured       Boolean   @default(false)
+  displayOrder   Int       @default(0)
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  @@map("career_opportunities")
+}
+
+model Testimonial {
+  id           String    @id @default(uuid())
+  name         String
+  designation  String
+  company      String
+  profileImage String?
+  testimonial  String
+  rating       Int       @default(5)
+  date         DateTime?
+  featured     Boolean   @default(false)
+  displayOrder Int       @default(0)
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  @@map("testimonials")
+}
+
+model SocialLink {
+  id           String   @id @default(uuid())
+  platform     String
+  url          String
+  icon         String?
+  isActive     Boolean  @default(true)
+  displayOrder Int      @default(0)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@map("social_links")
+}
+
+model ContactMessage {
+  id         String   @id @default(uuid())
+  name       String
+  email      String
+  phone      String?
+  subject    String
+  message    String
+  isRead     Boolean  @default(false)
+  isArchived Boolean  @default(false)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@map("contact_messages")
+}
+
+model WebsiteSetting {
+  id          String   @id @default(uuid())
+  key         String   @unique
+  value       String
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("website_settings")
+}
+
+model Statistic {
+  id           String   @id @default(uuid())
+  label        String
+  value        String
+  icon         String?
+  displayOrder Int      @default(0)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@map("statistics")
+}

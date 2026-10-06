@@ -1,0 +1,19 @@
+{
+  "name": "fullstack-portfolio-platform",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Production-grade full-stack developer portfolio and CMS platform",
+  "scripts": {
+    "dev:backend": "cd backend && npm run dev",
+    "dev:frontend": "cd frontend && npm run dev",
+    "build:backend": "cd backend && npm run build",
+    "build:frontend": "cd frontend && npm run build",
+    "build": "npm run build:backend && npm run build:frontend",
+    "test:backend": "cd backend && npm test",
+    "docker:up": "docker compose up -d",
+    "docker:down": "docker compose down",
+    "prisma:generate": "cd backend && npx prisma generate",
+    "prisma:migrate": "cd backend && npx prisma migrate dev",
+    "prisma:seed": "cd backend && npx ts-node prisma/seed.ts"
+  }
+}

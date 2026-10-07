@@ -140,7 +140,7 @@ export const CareerSection: React.FC<CareerSectionProps> = ({ opportunities }) =
 
                 <div className="pt-4 border-t border-[#00007B]/10">
                   <a
-                    href={opp.applicationUrl}
+                    href={opp.applicationUrl || opp.careerUrl || opp.jobUrl || '#'}
                     target="_blank"
                     rel="noreferrer"
                     className="w-full block"

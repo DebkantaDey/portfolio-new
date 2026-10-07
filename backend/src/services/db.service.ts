@@ -396,46 +396,148 @@ class DatabaseService {
           { companyName: { contains: query.search, mode: 'insensitive' } },
           { jobTitle: { contains: query.search, mode: 'insensitive' } },
           { location: { contains: query.search, mode: 'insensitive' } },
+          { jobUrl: { contains: query.search, mode: 'insensitive' } },
         ];
       }
-      return await prisma.careerOpportunity.findMany({ where, orderBy: { displayOrder: 'asc' } });
+      const results = await prisma.careerOpportunity.findMany({ where, orderBy: { displayOrder: 'asc' } });
+      return results.map((item) => ({
+        ...item,
+        careerUrl: (item as any).careerUrl || item.jobUrl || item.applicationUrl || null,
+      }));
     }
     let list = [...this.memoryStore.careerOpportunities];
-    if (query?.remoteType) list = list.filter((c) => c.remoteType.toLowerCase() === query.remoteType?.toLowerCase());
-    if (query?.status) list = list.filter((c) => c.status.toLowerCase() === query.status?.toLowerCase());
+    if (query?.remoteType) list = list.filter((c) => c.remoteType?.toLowerCase() === query.remoteType?.toLowerCase());
+    if (query?.status) list = list.filter((c) => c.status?.toLowerCase() === query.status?.toLowerCase());
     if (query?.featured !== undefined) list = list.filter((c) => c.featured === query.featured);
     if (query?.search) {
       const q = query.search.toLowerCase();
-      list = list.filter((c) => c.companyName.toLowerCase().includes(q) || c.jobTitle.toLowerCase().includes(q));
+      list = list.filter(
+        (c) =>
+          c.companyName?.toLowerCase().includes(q) ||
+          c.jobTitle?.toLowerCase().includes(q) ||
+          c.jobUrl?.toLowerCase().includes(q) ||
+          c.careerUrl?.toLowerCase().includes(q) ||
+          (c.requiredSkills && c.requiredSkills.some((s: string) => s.toLowerCase().includes(q)))
+      );
     }
-    return list.sort((a, b) => a.displayOrder - b.displayOrder);
+    return list
+      .sort((a, b) => (a.displayOrder || 0) - (b.displayOrder || 0))
+      .map((item) => ({
+        ...item,
+        careerUrl: item.careerUrl || item.jobUrl || item.applicationUrl || null,
+      }));
   }
 
   async getCareerOpportunityById(id: string) {
-    if (this.usingPostgres) return await prisma.careerOpportunity.findUnique({ where: { id } });
-    return this.memoryStore.careerOpportunities.find((c: any) => c.id === id) || null;
+    if (this.usingPostgres) {
+      const item = await prisma.careerOpportunity.findUnique({ where: { id } });
+      if (!item) return null;
+      return {
+        ...item,
+        careerUrl: (item as any).careerUrl || item.jobUrl || item.applicationUrl || null,
+      };
+    }
+    const item = this.memoryStore.careerOpportunities.find((c: any) => c.id === id);
+    if (!item) return null;
+    return {
+      ...item,
+      careerUrl: item.careerUrl || item.jobUrl || item.applicationUrl || null,
+    };
+  }
+
+  private resolveCompanyLogo(companyName: string, careerUrl?: string | null): string {
+    let domain = '';
+    if (careerUrl) {
+      try {
+        const formatted = careerUrl.startsWith('http') ? careerUrl : `https://${careerUrl}`;
+        const parsed = new URL(formatted);
+        domain = parsed.hostname.replace(/^www\./i, '');
+        if (
+          domain.includes('lever.co') ||
+          domain.includes('greenhouse.io') ||
+          domain.includes('ashbyhq.com') ||
+          domain.includes('myworkdayjobs.com') ||
+          domain.includes('workday.com')
+        ) {
+          if (companyName) {
+            domain = `${companyName.toLowerCase().replace(/[^a-z0-9]/g, '')}.com`;
+          }
+        }
+      } catch {
+        // fallback
+      }
+    }
+    if (!domain && companyName) {
+      domain = `${companyName.toLowerCase().replace(/[^a-z0-9]/g, '')}.com`;
+    }
+    if (domain) {
+      return `https://www.google.com/s2/favicons?domain=${domain}&sz=128`;
+    }
+    return '';
   }
 
   async createCareerOpportunity(data: any) {
-    const payload = {
+    const careerLink = data.careerUrl || data.careerPageUrl || data.jobUrl || null;
+    const companyName = data.companyName || 'Company';
+    const companyLogo = data.companyLogo || this.resolveCompanyLogo(companyName, careerLink);
+
+    const payload: any = {
       ...data,
       id: data.id || `car_${Date.now()}`,
+      companyName,
+      companyLogo,
+      jobTitle: data.jobTitle || 'Career Opportunities',
+      location: data.location || 'Remote / Global',
+      jobDescription: data.jobDescription || `Official career openings and job listings at ${companyName}.`,
+      jobUrl: careerLink,
+      applicationUrl: data.applicationUrl || careerLink || '',
+      companyWebsite: data.companyWebsite || null,
       requiredSkills: data.requiredSkills || [],
       postedDate: data.postedDate ? new Date(data.postedDate) : new Date(),
       closingDate: data.closingDate ? new Date(data.closingDate) : null,
       createdAt: new Date(),
       updatedAt: new Date(),
     };
-    if (this.usingPostgres) return await prisma.careerOpportunity.create({ data: payload });
+    // If not using postgres, also retain careerUrl on memory store object
+    if (careerLink) payload.careerUrl = careerLink;
+
+    if (this.usingPostgres) {
+      // Prisma table uses jobUrl, so omit extra non-schema properties if necessary
+      const { careerPageUrl, careerUrl, ...prismaData } = payload;
+      const created = await prisma.careerOpportunity.create({ data: prismaData });
+      return {
+        ...created,
+        careerUrl: created.jobUrl || created.applicationUrl || null,
+      };
+    }
     this.memoryStore.careerOpportunities.push(payload);
     return payload;
   }
 
   async updateCareerOpportunity(id: string, data: any) {
-    const payload = { ...data, updatedAt: new Date() };
+    const careerLink = data.careerUrl || data.careerPageUrl || data.jobUrl;
+    const payload: any = { ...data, updatedAt: new Date() };
+    if (careerLink !== undefined) {
+      payload.jobUrl = careerLink || null;
+      if (!payload.applicationUrl && careerLink) {
+        payload.applicationUrl = careerLink;
+      }
+      payload.careerUrl = careerLink;
+    }
+    if (!payload.companyLogo && (payload.companyName || careerLink)) {
+      payload.companyLogo = this.resolveCompanyLogo(payload.companyName || '', careerLink);
+    }
     if (data.postedDate) payload.postedDate = new Date(data.postedDate);
     if (data.closingDate !== undefined) payload.closingDate = data.closingDate ? new Date(data.closingDate) : null;
-    if (this.usingPostgres) return await prisma.careerOpportunity.update({ where: { id }, data: payload });
+
+    if (this.usingPostgres) {
+      const { careerPageUrl, careerUrl, ...prismaData } = payload;
+      const updated = await prisma.careerOpportunity.update({ where: { id }, data: prismaData });
+      return {
+        ...updated,
+        careerUrl: updated.jobUrl || updated.applicationUrl || null,
+      };
+    }
     const idx = this.memoryStore.careerOpportunities.findIndex((c: any) => c.id === id);
     if (idx === -1) return null;
     this.memoryStore.careerOpportunities[idx] = { ...this.memoryStore.careerOpportunities[idx], ...payload };

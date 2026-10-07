@@ -88,13 +88,13 @@ export default function AdminDashboardPage() {
       badge: data?.unreadMessages ? `${data.unreadMessages} New` : undefined,
     },
     {
-      label: 'Career Openings',
+      label: 'Career Portals',
       total: data?.totalCareerOpportunities || 0,
-      sub: 'Verified application links',
+      sub: 'Company career links & roles',
       icon: Sparkles,
       href: '/admin/career',
       color: 'text-[#0F9A73]',
-      trend: 'Recruiters',
+      trend: 'Private',
     },
   ];
 

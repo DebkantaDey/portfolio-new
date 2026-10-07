@@ -9,7 +9,6 @@ import { SkillsSection } from '../components/home/SkillsSection';
 import { ExperienceSection } from '../components/home/ExperienceSection';
 import { FeaturedProjects } from '../components/home/FeaturedProjects';
 import { ServicesSection } from '../components/home/ServicesSection';
-import { CareerSection } from '../components/home/CareerSection';
 import { EducationSection } from '../components/home/EducationSection';
 import { CertificationsSection } from '../components/home/CertificationsSection';
 import { AchievementsSection } from '../components/home/AchievementsSection';
@@ -24,7 +23,6 @@ import {
   Education,
   Project,
   Service,
-  CareerOpportunity,
   Certification,
   Achievement,
   Testimonial,
@@ -38,7 +36,6 @@ export default function HomePage() {
   const [experiences, setExperiences] = useState<Experience[]>([]);
   const [projects, setProjects] = useState<Project[]>([]);
   const [services, setServices] = useState<Service[]>([]);
-  const [careerOpportunities, setCareerOpportunities] = useState<CareerOpportunity[]>([]);
   const [educations, setEducations] = useState<Education[]>([]);
   const [certifications, setCertifications] = useState<Certification[]>([]);
   const [achievements, setAchievements] = useState<Achievement[]>([]);
@@ -55,7 +52,6 @@ export default function HomePage() {
           expRes,
           projRes,
           srvRes,
-          carRes,
           eduRes,
           certRes,
           achRes,
@@ -67,7 +63,6 @@ export default function HomePage() {
           api.getExperiences(),
           api.getProjects(),
           api.getServices(),
-          api.getCareerOpportunities(),
           api.getEducations(),
           api.getCertifications(),
           api.getAchievements(),
@@ -82,7 +77,6 @@ export default function HomePage() {
         if (expRes.status === 'fulfilled') setExperiences(expRes.value);
         if (projRes.status === 'fulfilled') setProjects(projRes.value);
         if (srvRes.status === 'fulfilled') setServices(srvRes.value);
-        if (carRes.status === 'fulfilled') setCareerOpportunities(carRes.value);
         if (eduRes.status === 'fulfilled') setEducations(eduRes.value);
         if (certRes.status === 'fulfilled') setCertifications(certRes.value);
         if (achRes.status === 'fulfilled') setAchievements(achRes.value);
@@ -123,10 +117,7 @@ export default function HomePage() {
       {/* 8. Professional Services */}
       <ServicesSection services={services} />
 
-      {/* 9. Open to Opportunities / Career Section */}
-      <CareerSection opportunities={careerOpportunities} />
-
-      {/* 10. Education */}
+      {/* 9. Education */}
       <EducationSection educations={educations} />
 
       {/* 11. Certifications */}

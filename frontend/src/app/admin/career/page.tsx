@@ -6,35 +6,140 @@ import {
   Edit2,
   Trash2,
   ExternalLink,
-  Briefcase,
   Building2,
-  AlertTriangle,
   Search,
-  Sparkles,
-  MapPin,
-  DollarSign,
   Globe,
-  Check,
-  X,
+  Lock,
+  CheckCircle2,
+  AlertTriangle,
+  Sparkles,
+  Link2,
+  RefreshCw,
 } from 'lucide-react';
 import { Button } from '../../../components/ui/Button';
-import { Badge } from '../../../components/ui/Badge';
 import { Modal } from '../../../components/ui/Modal';
-import { TechIcon, TECH_LIBRARY } from '../../../components/common/TechIcon';
-import { IconOrImageUpload } from '../../../components/common/IconOrImageUpload';
 import { api } from '../../../lib/api';
 import { CareerOpportunity } from '../../../types';
 import { toast } from 'sonner';
+
+const formatExternalUrl = (url?: string | null): string => {
+  if (!url) return '#';
+  const trimmed = url.trim();
+  if (/^https?:\/\//i.test(trimmed)) return trimmed;
+  return `https://${trimmed}`;
+};
+
+const cleanUrlDisplay = (url?: string | null): string => {
+  if (!url) return '';
+  return url.replace(/^https?:\/\/(www\.)?/i, '');
+};
+
+const extractDomain = (url: string, companyName?: string): string => {
+  if (url && url.trim()) {
+    try {
+      const formatted = url.trim().startsWith('http') ? url.trim() : `https://${url.trim()}`;
+      const parsed = new URL(formatted);
+      let domain = parsed.hostname.replace(/^www\./i, '');
+      const parts = parsed.pathname.split('/').filter(Boolean);
+      if (
+        (domain.includes('lever.co') ||
+          domain.includes('greenhouse.io') ||
+          domain.includes('ashbyhq.com') ||
+          domain.includes('workday.com')) &&
+        companyName?.trim()
+      ) {
+        domain = `${companyName.toLowerCase().replace(/[^a-z0-9]/g, '')}.com`;
+      } else if (
+        (domain.includes('lever.co') ||
+          domain.includes('greenhouse.io') ||
+          domain.includes('ashbyhq.com')) &&
+        parts.length > 0
+      ) {
+        domain = `${parts[0].toLowerCase().replace(/[^a-z0-9]/g, '')}.com`;
+      }
+      return domain;
+    } catch {
+      // not a full url yet
+    }
+  }
+  if (companyName && companyName.trim()) {
+    return `${companyName.toLowerCase().replace(/[^a-z0-9]/g, '')}.com`;
+  }
+  return '';
+};
+
+const getAutoCompanyLogo = (companyName: string, careerUrl: string): string => {
+  const domain = extractDomain(careerUrl, companyName);
+  if (!domain) return '';
+  return `https://www.google.com/s2/favicons?domain=${domain}&sz=128`;
+};
+
+// Company Logo component with automatic fallback
+const CompanyLogo = ({
+  logoUrl,
+  careerUrl,
+  companyName,
+  size = 48,
+}: {
+  logoUrl?: string | null;
+  careerUrl?: string | null;
+  companyName: string;
+  size?: number;
+}) => {
+  const domain = extractDomain(careerUrl || '', companyName);
+  const primarySrc = logoUrl || (domain ? `https://logo.clearbit.com/${domain}` : '');
+  const [src, setSrc] = useState(primarySrc);
+  const [fallbackStep, setFallbackStep] = useState(0);
+
+  useEffect(() => {
+    const newSrc = logoUrl || (domain ? `https://logo.clearbit.com/${domain}` : '');
+    setSrc(newSrc);
+    setFallbackStep(0);
+  }, [logoUrl, careerUrl, companyName, domain]);
+
+  const handleError = () => {
+    if (fallbackStep === 0 && domain) {
+      setFallbackStep(1);
+      setSrc(`https://www.google.com/s2/favicons?domain=${domain}&sz=128`);
+    } else {
+      setFallbackStep(2);
+      setSrc('');
+    }
+  };
+
+  if (!src || fallbackStep === 2) {
+    return (
+      <div
+        style={{ width: size, height: size }}
+        className="rounded-2xl bg-[#00007B]/5 border border-[#00007B]/15 flex items-center justify-center font-black text-[#00007B] text-lg uppercase select-none shrink-0 shadow-inner"
+      >
+        {companyName ? companyName.charAt(0) : <Building2 className="w-5 h-5 text-[#00007B]/40" />}
+      </div>
+    );
+  }
+
+  return (
+    <img
+      src={src}
+      alt={companyName || 'Company Logo'}
+      onError={handleError}
+      style={{ width: size, height: size }}
+      className="rounded-2xl object-contain p-2 bg-white border border-[#00007B]/15 shrink-0 shadow-xs"
+    />
+  );
+};
 
 export default function AdminCareerPage() {
   const [opportunities, setOpportunities] = useState<CareerOpportunity[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
-  const [remoteFilter, setRemoteFilter] = useState('All');
 
   // Modal States
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editingOpp, setEditingOpp] = useState<any | null>(null);
+  const [companyName, setCompanyName] = useState('');
+  const [careerUrl, setCareerUrl] = useState('');
+  const [companyLogo, setCompanyLogo] = useState('');
+  const [editingId, setEditingId] = useState<string | null>(null);
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
   const [isSaving, setIsSaving] = useState(false);
 
@@ -42,8 +147,8 @@ export default function AdminCareerPage() {
     try {
       const data = await api.getCareerOpportunities();
       setOpportunities(data.sort((a, b) => (a.displayOrder || 0) - (b.displayOrder || 0)));
-    } catch {
-      toast.error('Failed to load career opportunities');
+    } catch (err: any) {
+      toast.error('Failed to load career opportunities: ' + (err.message || ''));
     } finally {
       setLoading(false);
     }
@@ -54,82 +159,73 @@ export default function AdminCareerPage() {
   }, []);
 
   const handleOpenAdd = () => {
-    setEditingOpp({
-      companyName: '',
-      companyLogo: '',
-      companyWebsite: '',
-      jobTitle: '',
-      location: 'San Francisco, CA / Remote',
-      country: 'United States',
-      remoteType: 'Remote',
-      employmentType: 'Full-time',
-      jobDescription: 'Architecting high-throughput distributed services, leading API design, and scaling cloud infrastructure.',
-      skillsList: ['TypeScript', 'React', 'Node.js', 'PostgreSQL', 'Docker'],
-      salaryRange: '$180,000 - $240,000 USD + Equity',
-      applicationUrl: 'https://',
-      status: 'Open',
-      featured: true,
-      displayOrder: opportunities.length + 1,
-    });
+    setEditingId(null);
+    setCompanyName('');
+    setCareerUrl('');
+    setCompanyLogo('');
     setIsModalOpen(true);
   };
 
   const handleOpenEdit = (opp: CareerOpportunity) => {
-    setEditingOpp({
-      ...opp,
-      companyLogo: opp.companyLogo || '',
-      companyWebsite: opp.companyWebsite || '',
-      skillsList: opp.requiredSkills || [],
-    });
+    setEditingId(opp.id);
+    setCompanyName(opp.companyName || '');
+    const currentLink = opp.careerUrl || opp.jobUrl || opp.applicationUrl || '';
+    setCareerUrl(currentLink);
+    setCompanyLogo(opp.companyLogo || '');
     setIsModalOpen(true);
   };
 
-  const handleAddSkill = (skill: string) => {
-    if (!editingOpp) return;
-    const current = editingOpp.skillsList || [];
-    if (!current.includes(skill)) {
-      setEditingOpp({
-        ...editingOpp,
-        skillsList: [...current, skill],
-      });
+  // Update auto-logo in modal when companyName or careerUrl changes
+  useEffect(() => {
+    if (isModalOpen) {
+      const autoLogo = getAutoCompanyLogo(companyName, careerUrl);
+      setCompanyLogo(autoLogo);
     }
-  };
-
-  const handleRemoveSkill = (skillToRemove: string) => {
-    if (!editingOpp) return;
-    setEditingOpp({
-      ...editingOpp,
-      skillsList: (editingOpp.skillsList || []).filter((s: string) => s !== skillToRemove),
-    });
-  };
+  }, [companyName, careerUrl, isModalOpen]);
 
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!editingOpp.companyName || !editingOpp.jobTitle || !editingOpp.applicationUrl) {
-      toast.error('Please enter company, title, and valid application URL');
+    const cleanName = companyName.trim();
+    const cleanLink = careerUrl.trim();
+
+    if (!cleanName) {
+      toast.error('Please enter the Company Name');
+      return;
+    }
+    if (!cleanLink) {
+      toast.error('Please enter the Career Page Link');
       return;
     }
 
     setIsSaving(true);
     try {
+      const formattedUrl = formatExternalUrl(cleanLink);
+      const autoLogo = companyLogo || getAutoCompanyLogo(cleanName, formattedUrl);
+
       const payload = {
-        ...editingOpp,
-        companyLogo: editingOpp.companyLogo || null,
-        companyWebsite: editingOpp.companyWebsite || null,
-        requiredSkills: editingOpp.skillsList || [],
+        companyName: cleanName,
+        careerUrl: formattedUrl,
+        jobUrl: formattedUrl,
+        applicationUrl: formattedUrl,
+        companyLogo: autoLogo,
+        jobTitle: `${cleanName} Career Opportunities`,
+        location: 'Remote / Global',
+        jobDescription: `Official careers portal and engineering opportunities at ${cleanName}.`,
+        status: 'Open',
+        displayOrder: editingId ? undefined : opportunities.length + 1,
       };
 
-      if (editingOpp.id) {
-        await api.updateCareerOpportunity(editingOpp.id, payload);
-        toast.success(`Role '${editingOpp.jobTitle}' at '${editingOpp.companyName}' updated`);
+      if (editingId) {
+        await api.updateCareerOpportunity(editingId, payload);
+        toast.success(`Career page for ${cleanName} updated!`);
       } else {
         await api.createCareerOpportunity(payload);
-        toast.success(`Role created`);
+        toast.success(`Career page for ${cleanName} added!`);
       }
       setIsModalOpen(false);
       loadOpportunities();
     } catch (err: any) {
-      toast.error(err.message || 'Error saving opportunity');
+      toast.error(err.message || 'Error saving career link');
     } finally {
       setIsSaving(false);
     }
@@ -139,7 +235,7 @@ export default function AdminCareerPage() {
     if (!deleteConfirmId) return;
     try {
       await api.deleteCareerOpportunity(deleteConfirmId);
-      toast.success('Opportunity deleted');
+      toast.success('Company career link deleted');
       setDeleteConfirmId(null);
       loadOpportunities();
     } catch (err: any) {
@@ -148,31 +244,29 @@ export default function AdminCareerPage() {
   };
 
   const filtered = opportunities.filter((opp) => {
-    const matchesSearch =
-      opp.companyName.toLowerCase().includes(search.toLowerCase()) ||
-      opp.jobTitle.toLowerCase().includes(search.toLowerCase()) ||
-      (opp.requiredSkills &&
-        opp.requiredSkills.some((s) => s.toLowerCase().includes(search.toLowerCase())));
-    const matchesRemote =
-      remoteFilter === 'All' ? true : opp.remoteType === remoteFilter;
-    return matchesSearch && matchesRemote;
+    const q = search.toLowerCase();
+    const linkStr = (opp.careerUrl || opp.jobUrl || opp.applicationUrl || '').toLowerCase();
+    return (
+      opp.companyName.toLowerCase().includes(q) ||
+      linkStr.includes(q)
+    );
   });
 
   return (
     <div className="space-y-8">
-      {/* Header & Metrics Banner */}
+      {/* Top Banner */}
       <div className="bg-white border border-[#00007B]/15 rounded-3xl p-6 sm:p-8 shadow-sm">
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
           <div className="space-y-2">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#0F9A73]/15 text-[#0F9A73] border border-[#0F9A73]/30 text-xs font-mono font-bold">
-              <Briefcase className="w-3.5 h-3.5" />
-              <span>Recruiter &amp; Hiring Gateway</span>
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/10 text-amber-700 border border-amber-500/25 text-xs font-mono font-bold">
+              <Lock className="w-3.5 h-3.5 text-amber-600" />
+              <span>Private Admin Panel • Not visible on public pages</span>
             </div>
             <h1 className="text-3xl font-extrabold text-[#00007B] tracking-tight">
-              Career &amp; Engineering Opportunities
+              Company Career Opportunities
             </h1>
             <p className="text-xs sm:text-sm text-[#00007B]/70 max-w-2xl leading-relaxed">
-              Curate target engineering roles, salary ranges, remote preferences, and direct application links for talent partners and recruiters.
+              Add target companies and their career page links (e.g. Amazon: <span className="font-mono text-[#0F9A73] font-semibold">https://amazon.com/career</span>). Logos are fetched automatically. Click any link to open in another tab.
             </p>
           </div>
 
@@ -183,434 +277,284 @@ export default function AdminCareerPage() {
             className="bg-[#0F9A73] hover:bg-[#12b88a] text-white shadow-md font-bold self-start lg:self-center"
           >
             <Plus className="w-4 h-4 mr-2" />
-            <span>Add Opportunity</span>
+            <span>Add Company Link</span>
           </Button>
         </div>
 
-        {/* Metric Chips */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-8 pt-6 border-t border-[#00007B]/10">
+        {/* Quick Stats Banner */}
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mt-6 pt-6 border-t border-[#00007B]/10">
           <div className="p-3 bg-[#f8fafd] rounded-2xl border border-[#00007B]/10">
             <div className="text-[11px] font-mono text-[#00007B]/60 uppercase font-semibold">
-              Open Positions
+              Tracked Companies
             </div>
             <div className="text-xl font-extrabold text-[#00007B] mt-0.5">
-              {opportunities.filter((o) => o.status === 'Open').length} Open
+              {opportunities.length}
             </div>
           </div>
 
           <div className="p-3 bg-[#f8fafd] rounded-2xl border border-[#00007B]/10">
             <div className="text-[11px] font-mono text-[#00007B]/60 uppercase font-semibold">
-              Remote Preference
+              Automatic Logos
             </div>
             <div className="text-sm font-bold text-[#0F9A73] mt-1 flex items-center gap-1.5">
-              <span className="w-2 h-2 rounded-full bg-[#0F9A73] animate-pulse" />
-              <span>{opportunities.filter((o) => o.remoteType === 'Remote').length} Remote First</span>
+              <Sparkles className="w-4 h-4 text-[#0F9A73]" />
+              <span>Auto-Fetched</span>
             </div>
           </div>
 
-          <div className="p-3 bg-[#f8fafd] rounded-2xl border border-[#00007B]/10">
+          <div className="p-3 bg-[#f8fafd] rounded-2xl border border-[#00007B]/10 col-span-2 sm:col-span-1">
             <div className="text-[11px] font-mono text-[#00007B]/60 uppercase font-semibold">
-              Compensation
+              External Redirection
             </div>
-            <div className="text-sm font-bold text-[#00007B] mt-1">
-              Competitive Market
-            </div>
-          </div>
-
-          <div className="p-3 bg-[#f8fafd] rounded-2xl border border-[#00007B]/10">
-            <div className="text-[11px] font-mono text-[#00007B]/60 uppercase font-semibold">
-              Direct Apply
-            </div>
-            <div className="text-xs font-mono text-[#0F9A73] mt-1 font-bold">
-              Active Portals
+            <div className="text-xs font-mono text-[#00007B] mt-1 font-semibold flex items-center gap-1">
+              <ExternalLink className="w-3.5 h-3.5 text-[#0F9A73]" />
+              <span>Opens in New Tab</span>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Filter and Search Bar */}
-      <div className="bg-white border border-[#00007B]/15 p-4 rounded-2xl shadow-sm flex flex-col md:flex-row items-center justify-between gap-4">
-        <div className="relative w-full md:w-80">
+      {/* Search Bar */}
+      <div className="bg-white border border-[#00007B]/15 p-4 rounded-2xl shadow-sm flex items-center justify-between gap-4">
+        <div className="relative w-full sm:w-96">
           <Search className="w-4 h-4 text-[#00007B]/40 absolute left-3.5 top-1/2 -translate-y-1/2" />
           <input
             type="text"
-            placeholder="Search roles, companies, or skills..."
+            placeholder="Search company or career link..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="w-full pl-10 pr-4 py-2 rounded-xl bg-[#f8fafd] border border-[#00007B]/20 text-[#00007B] text-xs placeholder:text-[#00007B]/40 focus:outline-none focus:border-[#0F9A73]"
           />
         </div>
-
-        <div className="flex items-center gap-2 overflow-x-auto w-full md:w-auto pb-1 md:pb-0">
-          {['All', 'Remote', 'Hybrid', 'On-site'].map((type) => (
-            <button
-              key={type}
-              onClick={() => setRemoteFilter(type)}
-              className={`px-3.5 py-1.5 rounded-xl text-xs font-medium transition-all ${
-                remoteFilter === type
-                  ? 'bg-[#00007B] text-white font-bold shadow-sm'
-                  : 'bg-[#f8fafd] border border-[#00007B]/15 text-[#00007B]/70 hover:text-[#00007B]'
-              }`}
-            >
-              {type}
-            </button>
-          ))}
+        <div className="text-xs font-mono text-[#00007B]/60 hidden sm:block">
+          Showing {filtered.length} of {opportunities.length} companies
         </div>
       </div>
 
-      {/* Opportunities Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {filtered.map((opp) => (
-          <div
-            key={opp.id}
-            className="bg-white border border-[#00007B]/15 p-6 rounded-3xl flex flex-col justify-between hover:border-[#0F9A73] hover:shadow-md transition-all shadow-sm group"
-          >
-            <div>
-              <div className="flex items-start justify-between gap-3 mb-3">
-                <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 rounded-2xl bg-[#f8fafd] border border-[#00007B]/15 flex items-center justify-center p-2 shrink-0 shadow-inner">
-                    {opp.companyLogo ? (
-                      <TechIcon name={opp.companyLogo} size={28} />
-                    ) : (
-                      <Building2 className="w-6 h-6 text-[#00007B]/40" />
+      {/* Career List Section */}
+      <div className="bg-white border border-[#00007B]/15 rounded-3xl shadow-sm overflow-hidden">
+        <div className="p-5 sm:p-6 border-b border-[#00007B]/10 flex items-center justify-between">
+          <h2 className="text-lg font-bold text-[#00007B] flex items-center gap-2">
+            <Building2 className="w-5 h-5 text-[#0F9A73]" />
+            <span>Company Career Portals List</span>
+          </h2>
+          <span className="text-xs font-mono text-[#0F9A73] font-semibold bg-[#0F9A73]/10 px-3 py-1 rounded-full">
+            {opportunities.length} Companies Added
+          </span>
+        </div>
+
+        {/* List Items */}
+        <div className="divide-y divide-[#00007B]/10">
+          {filtered.map((opp) => {
+            const link = opp.careerUrl || opp.jobUrl || opp.applicationUrl || '';
+            const externalHref = formatExternalUrl(link);
+
+            return (
+              <div
+                key={opp.id}
+                className="p-4 sm:p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 hover:bg-[#f8fafd]/80 transition-colors group"
+              >
+                {/* Left: Company Logo, Name & Link */}
+                <div className="flex items-center gap-4 min-w-0 flex-1">
+                  <CompanyLogo
+                    logoUrl={opp.companyLogo}
+                    careerUrl={link}
+                    companyName={opp.companyName}
+                    size={52}
+                  />
+
+                  <div className="min-w-0 flex-1 space-y-1">
+                    <div className="flex items-center gap-2">
+                      <h3 className="text-base font-extrabold text-[#00007B] tracking-tight truncate">
+                        {opp.companyName}
+                      </h3>
+                    </div>
+
+                    {/* Company Career Link - Clickable redirection in another tab */}
+                    {link && (
+                      <a
+                        href={externalHref}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1.5 text-xs font-mono font-semibold text-[#0F9A73] hover:underline group/link truncate max-w-full"
+                        title={`Open ${opp.companyName} career page: ${link}`}
+                      >
+                        <Globe className="w-3.5 h-3.5 shrink-0 text-[#0F9A73]" />
+                        <span className="truncate">{cleanUrlDisplay(link)}</span>
+                        <ExternalLink className="w-3 h-3 shrink-0 text-[#0F9A73] group-hover/link:translate-x-0.5 transition-transform" />
+                      </a>
                     )}
                   </div>
-                  <div>
-                    <h3 className="text-base font-extrabold text-[#00007B] tracking-tight leading-snug">
-                      {opp.jobTitle}
-                    </h3>
-                    <div className="flex items-center gap-1.5 text-xs font-bold text-[#0F9A73] mt-0.5">
-                      <span>{opp.companyName}</span>
-                    </div>
-                  </div>
                 </div>
 
-                <Badge
-                  variant={opp.remoteType === 'Remote' ? 'emerald' : 'cyan'}
-                  size="sm"
-                >
-                  {opp.remoteType}
-                </Badge>
-              </div>
+                {/* Right: Actions */}
+                <div className="flex items-center gap-3 w-full sm:w-auto justify-end pt-2 sm:pt-0 border-t sm:border-t-0 border-[#00007B]/10">
+                  {/* Click to Redirect in Another Tab Button */}
+                  <a
+                    href={externalHref}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="px-4 py-2 rounded-xl bg-[#0F9A73] hover:bg-[#12b88a] text-white text-xs font-mono font-bold shadow-sm inline-flex items-center gap-1.5 transition-all shrink-0"
+                    title={`Redirect to ${opp.companyName} career page in another tab`}
+                  >
+                    <span>Visit Career Page</span>
+                    <ExternalLink className="w-3.5 h-3.5" />
+                  </a>
 
-              {/* Compensation & Location */}
-              <div className="space-y-1.5 mb-4 text-xs font-mono text-[#00007B]/70">
-                {opp.salaryRange && (
-                  <div className="flex items-center gap-1.5 text-[#00007B] font-bold">
-                    <DollarSign className="w-3.5 h-3.5 text-[#0F9A73]" />
-                    <span>{opp.salaryRange}</span>
-                  </div>
-                )}
-                <div className="flex items-center gap-1.5">
-                  <MapPin className="w-3.5 h-3.5 text-[#0F9A73]" />
-                  <span>{opp.location}</span>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => handleOpenEdit(opp)}
+                    className="border-[#00007B]/20 text-[#00007B] hover:border-[#0F9A73] hover:text-[#0F9A73] px-3"
+                    title="Edit company or link"
+                  >
+                    <Edit2 className="w-3.5 h-3.5" />
+                  </Button>
+
+                  <Button
+                    variant="danger"
+                    size="sm"
+                    onClick={() => setDeleteConfirmId(opp.id)}
+                    className="bg-rose-50 border border-rose-200 text-rose-600 hover:bg-rose-600 hover:text-white px-3"
+                    title="Delete company"
+                  >
+                    <Trash2 className="w-3.5 h-3.5" />
+                  </Button>
                 </div>
               </div>
+            );
+          })}
 
-              <p className="text-xs text-[#00007B]/80 line-clamp-3 leading-relaxed mb-4">
-                {opp.jobDescription}
-              </p>
-
-              {/* Required Skills Badges */}
-              {opp.requiredSkills && opp.requiredSkills.length > 0 && (
-                <div className="flex flex-wrap gap-1.5 pt-1">
-                  {opp.requiredSkills.slice(0, 4).map((skill) => (
-                    <span
-                      key={skill}
-                      className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-mono bg-[#f8fafd] border border-[#00007B]/15 text-[#00007B] font-semibold"
-                    >
-                      <TechIcon name={skill} size={11} />
-                      <span>{skill}</span>
-                    </span>
-                  ))}
-                  {opp.requiredSkills.length > 4 && (
-                    <span className="text-[10px] font-mono text-[#00007B]/50 self-center">
-                      +{opp.requiredSkills.length - 4}
-                    </span>
-                  )}
+          {filtered.length === 0 && !loading && (
+            <div className="p-12 text-center text-sm font-mono text-[#00007B]/60">
+              {search ? (
+                <span>No companies found matching &quot;{search}&quot;.</span>
+              ) : (
+                <div className="space-y-3">
+                  <p>No company career portals added yet.</p>
+                  <Button
+                    variant="primary"
+                    size="sm"
+                    onClick={handleOpenAdd}
+                    className="bg-[#0F9A73] hover:bg-[#12b88a] text-white"
+                  >
+                    <Plus className="w-4 h-4 mr-1.5" />
+                    <span>Add First Company</span>
+                  </Button>
                 </div>
               )}
             </div>
-
-            <div className="pt-4 border-t border-[#00007B]/10 flex items-center justify-between mt-5">
-              <a
-                href={opp.applicationUrl}
-                target="_blank"
-                rel="noreferrer"
-                className="text-xs font-mono font-bold text-[#0F9A73] hover:underline inline-flex items-center gap-1"
-              >
-                <span>Apply Portal</span>
-                <ExternalLink className="w-3 h-3" />
-              </a>
-
-              <div className="flex items-center gap-2">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => handleOpenEdit(opp)}
-                  className="border-[#00007B]/20 text-[#00007B] hover:border-[#0F9A73] hover:text-[#0F9A73]"
-                >
-                  <Edit2 className="w-3.5 h-3.5" />
-                </Button>
-                <Button
-                  variant="danger"
-                  size="sm"
-                  onClick={() => setDeleteConfirmId(opp.id)}
-                  className="bg-rose-50 border border-rose-200 text-rose-600 hover:bg-rose-600 hover:text-white"
-                >
-                  <Trash2 className="w-3.5 h-3.5" />
-                </Button>
-              </div>
-            </div>
-          </div>
-        ))}
-        {filtered.length === 0 && !loading && (
-          <div className="col-span-full py-12 text-center text-sm font-mono text-[#00007B]/60 bg-white border border-[#00007B]/15 rounded-3xl">
-            No career opportunities found matching &quot;{search}&quot;.
-          </div>
-        )}
+          )}
+        </div>
       </div>
 
-      {/* Add / Edit Modal */}
+      {/* Add / Edit Modal (Only Company Name and Career Page Link) */}
       <Modal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        title={editingOpp?.id ? 'Edit Opportunity' : 'Add Career Opportunity'}
-        maxWidth="3xl"
+        title={editingId ? `Edit Company Career Link: ${companyName}` : 'Add Company Career Page Link'}
+        maxWidth="lg"
       >
-        {editingOpp && (
-          <form onSubmit={handleSave} className="space-y-5">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-xs font-mono font-medium text-[#00007B] mb-1.5">
-                  Job Title *
-                </label>
-                <input
-                  type="text"
-                  required
-                  value={editingOpp.jobTitle || ''}
-                  onChange={(e) => setEditingOpp({ ...editingOpp, jobTitle: e.target.value })}
-                  placeholder="e.g. Staff Full-Stack Engineer"
-                  className="w-full px-4 py-2.5 rounded-xl bg-[#f8fafd] border border-[#00007B]/20 text-[#00007B] text-sm focus:outline-none focus:border-[#0F9A73]"
-                />
-              </div>
+        <form onSubmit={handleSave} className="space-y-5">
+          {/* Company Name Input */}
+          <div>
+            <label className="block text-xs font-mono font-bold text-[#00007B] mb-1.5">
+              Company Name *
+            </label>
+            <input
+              type="text"
+              required
+              value={companyName}
+              onChange={(e) => setCompanyName(e.target.value)}
+              placeholder="e.g. Amazon, Google, Stripe, Microsoft, Netflix"
+              className="w-full px-4 py-2.5 rounded-xl bg-[#f8fafd] border border-[#00007B]/20 text-[#00007B] text-sm focus:outline-none focus:border-[#0F9A73]"
+              autoFocus
+            />
+          </div>
 
-              <div>
-                <label className="block text-xs font-mono font-medium text-[#00007B] mb-1.5">
-                  Company Name *
-                </label>
-                <input
-                  type="text"
-                  required
-                  value={editingOpp.companyName || ''}
-                  onChange={(e) => {
-                    const name = e.target.value;
-                    setEditingOpp({
-                      ...editingOpp,
-                      companyName: name,
-                      companyLogo: editingOpp.companyLogo || name.toLowerCase().replace(/[^a-z0-9]/g, ''),
-                    });
-                  }}
-                  placeholder="e.g. OpenAI, Stripe, Figma"
-                  className="w-full px-4 py-2.5 rounded-xl bg-[#f8fafd] border border-[#00007B]/20 text-[#00007B] text-sm focus:outline-none focus:border-[#0F9A73]"
-                />
-              </div>
-            </div>
+          {/* Company Career Page Link Input */}
+          <div>
+            <label className="block text-xs font-mono font-bold text-[#00007B] mb-1.5 flex items-center justify-between">
+              <span className="flex items-center gap-1.5">
+                <Globe className="w-3.5 h-3.5 text-[#0F9A73]" />
+                Career Page Link *
+              </span>
+              <span className="text-[11px] text-[#0F9A73] font-normal font-mono">
+                e.g. https://amazon.com/career
+              </span>
+            </label>
+            <input
+              type="text"
+              required
+              value={careerUrl}
+              onChange={(e) => setCareerUrl(e.target.value)}
+              placeholder="https://amazon.com/career or amazon.jobs"
+              className="w-full px-4 py-2.5 rounded-xl bg-[#f8fafd] border border-[#00007B]/20 text-[#00007B] text-sm font-mono focus:outline-none focus:border-[#0F9A73]"
+            />
+            <p className="text-[11px] text-[#00007B]/60 font-mono mt-1">
+              Clicking the link will redirect to this URL in another tab.
+            </p>
+          </div>
 
-            {/* Company Logo / Tool Badge */}
-            <div className="p-4 bg-[#f8fafd] rounded-2xl border border-[#00007B]/15">
-              <IconOrImageUpload
-                label="Company Brand Logo or Tech Badge"
-                value={editingOpp.companyLogo || ''}
-                onChange={(logoVal) => setEditingOpp({ ...editingOpp, companyLogo: logoVal })}
-                helperText="Select a tech icon or upload custom company logo image"
-                mode="all"
-              />
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              <div>
-                <label className="block text-xs font-mono font-medium text-[#00007B] mb-1.5">
-                  Remote Policy
-                </label>
-                <select
-                  value={editingOpp.remoteType || 'Remote'}
-                  onChange={(e) => setEditingOpp({ ...editingOpp, remoteType: e.target.value })}
-                  className="w-full px-4 py-2.5 rounded-xl bg-[#f8fafd] border border-[#00007B]/20 text-[#00007B] text-sm focus:outline-none focus:border-[#0F9A73]"
-                >
-                  <option value="Remote">Remote</option>
-                  <option value="Hybrid">Hybrid</option>
-                  <option value="On-site">On-site</option>
-                </select>
-              </div>
-
-              <div>
-                <label className="block text-xs font-mono font-medium text-[#00007B] mb-1.5">
-                  Employment Type
-                </label>
-                <select
-                  value={editingOpp.employmentType || 'Full-time'}
-                  onChange={(e) => setEditingOpp({ ...editingOpp, employmentType: e.target.value })}
-                  className="w-full px-4 py-2.5 rounded-xl bg-[#f8fafd] border border-[#00007B]/20 text-[#00007B] text-sm focus:outline-none focus:border-[#0F9A73]"
-                >
-                  <option value="Full-time">Full-time</option>
-                  <option value="Contract">Contract</option>
-                  <option value="Part-time">Part-time</option>
-                </select>
-              </div>
-
-              <div>
-                <label className="block text-xs font-mono font-medium text-[#00007B] mb-1.5">
-                  Compensation / Salary Range
-                </label>
-                <input
-                  type="text"
-                  value={editingOpp.salaryRange || ''}
-                  onChange={(e) => setEditingOpp({ ...editingOpp, salaryRange: e.target.value })}
-                  placeholder="$190k - $250k USD"
-                  className="w-full px-4 py-2.5 rounded-xl bg-[#f8fafd] border border-[#00007B]/20 text-[#00007B] text-sm focus:outline-none focus:border-[#0F9A73]"
-                />
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-xs font-mono font-medium text-[#00007B] mb-1.5">
-                  Location (City &amp; Country)
-                </label>
-                <input
-                  type="text"
-                  value={editingOpp.location || ''}
-                  onChange={(e) => setEditingOpp({ ...editingOpp, location: e.target.value })}
-                  placeholder="San Francisco, CA or Remote (US/Global)"
-                  className="w-full px-4 py-2.5 rounded-xl bg-[#f8fafd] border border-[#00007B]/20 text-[#00007B] text-sm focus:outline-none focus:border-[#0F9A73]"
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs font-mono font-medium text-[#00007B] mb-1.5">
-                  Application Link / ATS URL *
-                </label>
-                <input
-                  type="url"
-                  required
-                  value={editingOpp.applicationUrl || ''}
-                  onChange={(e) => setEditingOpp({ ...editingOpp, applicationUrl: e.target.value })}
-                  placeholder="https://jobs.lever.co/... or greenhouse.io"
-                  className="w-full px-4 py-2.5 rounded-xl bg-[#f8fafd] border border-[#00007B]/20 text-[#00007B] text-sm focus:outline-none focus:border-[#0F9A73]"
-                />
-              </div>
-            </div>
-
-            <div>
-              <label className="block text-xs font-mono font-medium text-[#00007B] mb-1.5">
-                Role Description &amp; Scope
-              </label>
-              <textarea
-                rows={3}
-                value={editingOpp.jobDescription || ''}
-                onChange={(e) => setEditingOpp({ ...editingOpp, jobDescription: e.target.value })}
-                placeholder="High-level engineering problem space, team mission, and expectations..."
-                className="w-full px-4 py-2.5 rounded-xl bg-[#f8fafd] border border-[#00007B]/20 text-[#00007B] text-sm focus:outline-none focus:border-[#0F9A73] resize-none"
-              />
-            </div>
-
-            {/* Interactive Required Skills Picker */}
-            <div className="p-4 bg-[#f8fafd] rounded-2xl border border-[#00007B]/15 space-y-3">
-              <div className="flex items-center justify-between">
-                <label className="block text-xs font-mono font-bold text-[#00007B]">
-                  Required Core Technical Skills *
-                </label>
-                <span className="text-[11px] font-mono text-[#00007B]/60">
-                  Click a tech tool to toggle
+          {/* Automatic Logo Fetching Preview */}
+          <div className="p-4 bg-[#f8fafd] rounded-2xl border border-[#00007B]/15 space-y-2">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-mono font-bold text-[#00007B] flex items-center gap-1.5">
+                <Sparkles className="w-3.5 h-3.5 text-[#0F9A73]" />
+                Company Logo (Automatically Fetched)
+              </span>
+              {(companyName || careerUrl) && (
+                <span className="text-[11px] font-mono text-[#0F9A73] font-semibold flex items-center gap-1">
+                  <CheckCircle2 className="w-3 h-3" />
+                  Auto-detected
                 </span>
-              </div>
-
-              {/* Selected Badges */}
-              <div className="flex flex-wrap gap-2 min-h-9 p-2.5 bg-white border border-[#00007B]/15 rounded-xl">
-                {(editingOpp.skillsList || []).map((s: string) => (
-                  <span
-                    key={s}
-                    className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-mono bg-[#0F9A73]/15 text-[#00007B] border border-[#0F9A73]/30 font-bold"
-                  >
-                    <TechIcon name={s} size={13} />
-                    <span>{s}</span>
-                    <button
-                      type="button"
-                      onClick={() => handleRemoveSkill(s)}
-                      className="ml-1 text-rose-500 hover:text-rose-700"
-                    >
-                      <X className="w-3 h-3" />
-                    </button>
-                  </span>
-                ))}
-              </div>
-
-              {/* Quick Add Grid */}
-              <div className="flex flex-wrap gap-1.5 max-h-24 overflow-y-auto p-1">
-                {TECH_LIBRARY.map((item) => {
-                  const isAdded = (editingOpp.skillsList || []).includes(item.name);
-                  return (
-                    <button
-                      key={item.id}
-                      type="button"
-                      onClick={() => handleAddSkill(item.name)}
-                      className={`inline-flex items-center gap-1 px-2 py-1 rounded-md text-[11px] font-mono transition-all ${
-                        isAdded
-                          ? 'bg-[#0F9A73] text-white font-bold opacity-60'
-                          : 'bg-white border border-[#00007B]/20 text-[#00007B] hover:border-[#0F9A73] hover:text-[#0F9A73]'
-                      }`}
-                    >
-                      <TechIcon name={item.id} size={13} />
-                      <span>{item.name}</span>
-                      {isAdded ? <Check className="w-3 h-3 ml-0.5" /> : <Plus className="w-3 h-3 ml-0.5 text-[#0F9A73]" />}
-                    </button>
-                  );
-                })}
-              </div>
+              )}
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
-              <div>
-                <label className="block text-xs font-mono font-medium text-[#00007B] mb-1.5">
-                  Display Order
-                </label>
-                <input
-                  type="number"
-                  value={editingOpp.displayOrder || 1}
-                  onChange={(e) =>
-                    setEditingOpp({ ...editingOpp, displayOrder: parseInt(e.target.value, 10) || 1 })
-                  }
-                  className="w-full px-4 py-2.5 rounded-xl bg-[#f8fafd] border border-[#00007B]/20 text-[#00007B] text-sm focus:outline-none focus:border-[#0F9A73]"
-                />
-              </div>
-
-              <div className="flex items-center gap-4 pt-6">
-                <label className="flex items-center gap-2 cursor-pointer text-xs font-semibold text-[#00007B]">
-                  <input
-                    type="checkbox"
-                    checked={editingOpp.featured ?? true}
-                    onChange={(e) => setEditingOpp({ ...editingOpp, featured: e.target.checked })}
-                    className="w-4 h-4 rounded text-[#0F9A73] accent-[#0F9A73] border-[#00007B]/20"
-                  />
-                  <span>Feature on Career Page</span>
-                </label>
+            <div className="flex items-center gap-3 pt-1">
+              <CompanyLogo
+                logoUrl={companyLogo}
+                careerUrl={careerUrl}
+                companyName={companyName}
+                size={54}
+              />
+              <div className="text-xs text-[#00007B]/70 space-y-0.5">
+                <div className="font-bold text-[#00007B]">
+                  {companyName || 'Enter company name above'}
+                </div>
+                <div className="text-[11px] text-[#00007B]/50 font-mono">
+                  {careerUrl
+                    ? `Domain: ${extractDomain(careerUrl, companyName) || 'detected'}`
+                    : 'Logo automatically appears as you type'}
+                </div>
               </div>
             </div>
+          </div>
 
-            <div className="pt-4 border-t border-[#00007B]/10 flex justify-end gap-3">
-              <Button type="button" variant="outline" size="sm" onClick={() => setIsModalOpen(false)}>
-                Cancel
-              </Button>
-              <Button type="submit" variant="primary" size="md" isLoading={isSaving} className="shadow-md">
-                Save Opportunity
-              </Button>
-            </div>
-          </form>
-        )}
+          {/* Submit & Cancel */}
+          <div className="pt-3 border-t border-[#00007B]/10 flex justify-end gap-3">
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => setIsModalOpen(false)}
+            >
+              Cancel
+            </Button>
+            <Button
+              type="submit"
+              variant="primary"
+              size="md"
+              isLoading={isSaving}
+              className="bg-[#0F9A73] hover:bg-[#12b88a] text-white shadow-md font-bold"
+            >
+              {editingId ? 'Update Company' : 'Save Company Link'}
+            </Button>
+          </div>
+        </form>
       </Modal>
 
-      {/* Delete Modal */}
+      {/* Delete Confirmation Modal */}
       <Modal
         isOpen={!!deleteConfirmId}
         onClose={() => setDeleteConfirmId(null)}
@@ -621,11 +565,15 @@ export default function AdminCareerPage() {
           <div className="flex items-center gap-3 text-rose-600">
             <AlertTriangle className="w-6 h-6 shrink-0" />
             <p className="text-xs text-[#00007B]">
-              Are you sure you want to delete this career opportunity?
+              Are you sure you want to remove this company career link?
             </p>
           </div>
           <div className="flex justify-end gap-3 pt-2">
-            <Button variant="outline" size="sm" onClick={() => setDeleteConfirmId(null)}>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setDeleteConfirmId(null)}
+            >
               Cancel
             </Button>
             <Button variant="danger" size="sm" onClick={handleDelete}>

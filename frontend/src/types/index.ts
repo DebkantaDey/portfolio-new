@@ -139,7 +139,9 @@ export interface CareerOpportunity {
   requiredSkills: string[];
   salaryRange?: string | null;
   jobUrl?: string | null;
-  applicationUrl: string;
+  careerUrl?: string | null;
+  careerPageUrl?: string | null;
+  applicationUrl?: string | null;
   companyWebsite?: string | null;
   postedDate: string;
   closingDate?: string | null;

@@ -69,13 +69,6 @@ export const CommandPalette: React.FC = () => {
       shortcut: 'E',
     },
     {
-      id: 'career',
-      title: 'Recruiter Hub & Open Opportunities',
-      category: 'Navigation',
-      icon: <Briefcase className="w-4 h-4 text-[#0F9A73]" />,
-      action: () => router.push('/career'),
-    },
-    {
       id: 'resume',
       title: 'Download or View Resume / CV',
       category: 'Actions',

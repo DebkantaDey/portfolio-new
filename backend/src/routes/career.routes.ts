@@ -12,8 +12,8 @@ import { careerOpportunitySchema } from '../validators';
 
 const router = Router();
 
-router.get('/', getCareerOpportunities);
-router.get('/:id', getCareerOpportunityById);
+router.get('/', authenticateJwt, requireAdmin, getCareerOpportunities);
+router.get('/:id', authenticateJwt, requireAdmin, getCareerOpportunityById);
 router.post('/', authenticateJwt, requireAdmin, validateRequest(careerOpportunitySchema), createCareerOpportunity);
 router.put('/:id', authenticateJwt, requireAdmin, validateRequest(careerOpportunitySchema), updateCareerOpportunity);
 router.delete('/:id', authenticateJwt, requireAdmin, deleteCareerOpportunity);

@@ -14,11 +14,13 @@ interface SkillsSectionProps {
 export const SkillsSection: React.FC<SkillsSectionProps> = ({ skills }) => {
   const [activeCategory, setActiveCategory] = useState<string>('All');
 
+  const sortedSkills = [...skills].sort((a, b) => (a.displayOrder ?? 0) - (b.displayOrder ?? 0));
+
   // Extract unique categories
-  const categories = ['All', ...Array.from(new Set(skills.map((s) => s.category)))];
+  const categories = ['All', ...Array.from(new Set(sortedSkills.map((s) => s.category)))];
 
   const filteredSkills =
-    activeCategory === 'All' ? skills : skills.filter((s) => s.category === activeCategory);
+    activeCategory === 'All' ? sortedSkills : sortedSkills.filter((s) => s.category === activeCategory);
 
   const getTierLabel = (proficiency: number) => {
     if (proficiency >= 90) return { label: 'Staff / Expert', color: 'text-[#0F9A73] bg-[#0F9A73]/15 border-[#0F9A73]/40' };

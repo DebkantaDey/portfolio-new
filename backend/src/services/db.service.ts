@@ -137,17 +137,19 @@ class DatabaseService {
 
   async reorderSkills(orderedIds: string[]) {
     if (this.usingPostgres) {
-      return await prisma.$transaction(
+      await prisma.$transaction(
         orderedIds.map((id, index) =>
           prisma.skill.update({ where: { id }, data: { displayOrder: index + 1 } })
         )
       );
+      return await prisma.skill.findMany({ orderBy: { displayOrder: 'asc' } });
     }
     orderedIds.forEach((id, index) => {
       const skill = this.memoryStore.skills.find((s: any) => s.id === id);
       if (skill) skill.displayOrder = index + 1;
     });
-    return this.memoryStore.skills;
+    this.memoryStore.skills.sort((a: any, b: any) => (a.displayOrder || 0) - (b.displayOrder || 0));
+    return [...this.memoryStore.skills];
   }
 
   // --- EXPERIENCES ---

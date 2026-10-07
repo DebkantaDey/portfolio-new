@@ -76,7 +76,9 @@ export default function HomePage() {
 
         if (profileRes.status === 'fulfilled') setProfile(profileRes.value);
         if (statsRes.status === 'fulfilled') setStats(statsRes.value);
-        if (skillsRes.status === 'fulfilled') setSkills(skillsRes.value);
+        if (skillsRes.status === 'fulfilled') {
+          setSkills([...skillsRes.value].sort((a, b) => (a.displayOrder ?? 0) - (b.displayOrder ?? 0)));
+        }
         if (expRes.status === 'fulfilled') setExperiences(expRes.value);
         if (projRes.status === 'fulfilled') setProjects(projRes.value);
         if (srvRes.status === 'fulfilled') setServices(srvRes.value);

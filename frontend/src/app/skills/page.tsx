@@ -16,14 +16,16 @@ export default function SkillsPage() {
 
   useEffect(() => {
     api.getSkills().then((res) => {
-      setSkills(res);
+      const sorted = [...res].sort((a, b) => (a.displayOrder ?? 0) - (b.displayOrder ?? 0));
+      setSkills(sorted);
       setLoading(false);
     }).catch(console.error);
   }, []);
 
-  const categories = ['All', ...Array.from(new Set(skills.map((p) => p.category)))];
+  const sortedSkills = [...skills].sort((a, b) => (a.displayOrder ?? 0) - (b.displayOrder ?? 0));
+  const categories = ['All', ...Array.from(new Set(sortedSkills.map((p) => p.category)))];
 
-  const filtered = skills.filter((s) => {
+  const filtered = sortedSkills.filter((s) => {
     const matchesCat = activeCategory === 'All' || s.category === activeCategory;
     const matchesSearch =
       s.name.toLowerCase().includes(search.toLowerCase()) ||

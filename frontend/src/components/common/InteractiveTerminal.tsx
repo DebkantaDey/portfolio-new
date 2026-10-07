@@ -217,7 +217,7 @@ export const InteractiveTerminal: React.FC = () => {
 {
   "status": "success",
   "data": {
-    "engineer": "Alex Morgan",
+    "engineer": "Debkanta Dey",
     "role": "Senior Full-Stack & Systems Architect",
     "experience": 8,
     "openFor": ["Full-Time", "Contract Staff Augmentation", "Advisory"],

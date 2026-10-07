@@ -177,7 +177,7 @@ export const LATEX_TEMPLATES: Record<string, LatexTemplateMeta> = {
 
 %----------HEADING----------
 \\begin{center}
-    \\textbf{\\Huge \\scshape Alex Morgan} \\\\ \\vspace{2pt}
+    \\textbf{\\Huge \\scshape Debkanta Dey} \\\\ \\vspace{2pt}
     \\small +1 (415) 890-4211 $|$ \\href{mailto:alex@alexmorgan.dev}{\\underline{alex@alexmorgan.dev}} $|$ 
     \\href{https://linkedin.com/in/alexmorgan-dev}{\\underline{linkedin.com/in/alexmorgan}} $|$
     \\href{https://github.com/alexmorgan}{\\underline{github.com/alexmorgan}} $|$
@@ -398,7 +398,7 @@ Dean's Honors List`,
 
 % Top Header
 \\begin{center}
-    {\\Huge \\textbf{ALEX MORGAN}} \\\\
+    {\\Huge \\textbf{Debkanta Dey}} \\\\
     \\vspace{2pt}
     {\\large \\textit{Senior Full-Stack Architect \\& Distributed Systems Engineer}} \\\\
     \\vspace{4pt}
@@ -526,7 +526,7 @@ Dean's Honors List
 \\begin{document}
 
 \\begin{center}
-    {\\Large \\textbf{ALEX MORGAN}} \\\\
+    {\\Large \\textbf{Debkanta Dey}} \\\\
     \\vspace{3pt}
     Senior Full-Stack Architect $\\cdot$ Cloud Systems Engineer \\\\
     San Francisco, CA $\\cdot$ alex@alexmorgan.dev $\\cdot$ +1 (415) 890-4211 \\\\
@@ -688,7 +688,7 @@ Collaborative real-time canvas and document processing suite powered by CRDT con
 
 % Top Header
 \\begin{center}
-    {\\Huge \\textbf{ALEX MORGAN}} \\\\
+    {\\Huge \\textbf{Debkanta Dey}} \\\\
     \\vspace{2pt}
     {\\large \\textbf{Staff Software Architect \\& Engineering Director}} \\\\
     \\vspace{4pt}
@@ -798,7 +798,7 @@ Collaborative real-time canvas and document processing suite powered by CRDT con
 \\begin{document}
 
 \\begin{center}
-    {\\Huge \\textbf{Alex Morgan}} \\\\
+    {\\Huge \\textbf{Debkanta Dey}} \\\\
     \\vspace{2pt}
     \\small Senior Full-Stack Engineer \\& Cloud Architect \\\\
     \\vspace{2pt}
@@ -1006,7 +1006,7 @@ ${bullets || `        \\resumeItem{Delivered critical software engineering miles
 
 %----------HEADING----------
 \\begin{center}
-    \\textbf{\\Huge \\scshape ${escapeLatex(data.fullName || 'Alex Morgan')}} \\\\ \\vspace{2pt}
+    \\textbf{\\Huge \\scshape ${escapeLatex(data.fullName || 'Debkanta Dey')}} \\\\ \\vspace{2pt}
     \\small ${escapeLatex(data.phone || '+1 (415) 890-4211')} $|$ 
     \\href{mailto:${data.email || 'alex@alexmorgan.dev'}}{\\underline{${escapeLatex(data.email || 'alex@alexmorgan.dev')}}} $|$ 
     ${data.location ? `${escapeLatex(data.location)} $|$ ` : ''}
@@ -1209,7 +1209,7 @@ ${projectsLatex}`;
 
 % Top Header
 \\begin{center}
-    {\\Huge \\textbf{${escapeLatex(data.fullName || 'Alex Morgan')}}} \\\\
+    {\\Huge \\textbf{${escapeLatex(data.fullName || 'Debkanta Dey')}}} \\\\
     \\vspace{2pt}
     {\\large \\textit{${escapeLatex(data.professionalTitle || 'Senior Full-Stack Architect')}}} \\\\
     \\vspace{3pt}

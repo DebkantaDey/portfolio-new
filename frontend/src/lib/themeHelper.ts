@@ -2,8 +2,8 @@
 
 export const DEFAULT_SETTINGS: Record<string, string> = {
   // Brand & Identity
-  siteName: 'Alex Morgan | Senior Full-Stack Engineer & Cloud Architect',
-  brandName: 'Alex Morgan',
+  siteName: 'Debkanta Dey | Senior Full-Stack Engineer & Cloud Architect',
+  brandName: 'Debkanta Dey',
   brandRole: 'Senior Full-Stack Architect',
   availabilityStatus: 'Available for hire',
 
@@ -16,7 +16,7 @@ export const DEFAULT_SETTINGS: Record<string, string> = {
   fontFamily: 'Inter',
 
   // Hero Section
-  heroHeadline: 'Alex Morgan',
+  heroHeadline: 'Debkanta Dey',
   heroTitle: 'Senior Full-Stack Engineer & Cloud Architect',
   heroBio:
     'Architecting resilient distributed backends, high-performance Next.js web applications, and fault-tolerant cloud systems that scale to millions of requests.',
@@ -33,14 +33,14 @@ export const DEFAULT_SETTINGS: Record<string, string> = {
   // Footer
   footerBio:
     'Staff Full-Stack Software Engineer & Cloud Systems Architect. Crafting deterministic, fault-tolerant web applications and high-throughput microservices.',
-  footerCopyright: `© ${new Date().getFullYear()} Alex Morgan. Built with Next.js, Node.js & PostgreSQL.`,
+  footerCopyright: `© ${new Date().getFullYear()} Debkanta Dey. Built with Next.js, Node.js & PostgreSQL.`,
   footerStatusText: 'All services online',
 
   // SEO & Advanced
   seoMetaDescription:
-    'Production portfolio of Alex Morgan. Specializing in Next.js 15, TypeScript, Node.js, PostgreSQL, Docker, and distributed systems architecture.',
+    'Production portfolio of Debkanta Dey. Specializing in Next.js 15, TypeScript, Node.js, PostgreSQL, Docker, and distributed systems architecture.',
   seoKeywords:
-    'Alex Morgan, Full-Stack Developer, Software Architect, Next.js, TypeScript, Node.js, PostgreSQL, Cloud Architecture',
+    'Debkanta Dey, Full-Stack Developer, Software Architect, Next.js, TypeScript, Node.js, PostgreSQL, Cloud Architecture',
   googleAnalyticsId: '',
   maintenanceMode: 'false',
 };

@@ -17,7 +17,7 @@ export default function AboutPage() {
     api.getProfile().then(setProfile).catch(console.error);
   }, []);
 
-  const fullName = getSetting('brandName') || profile?.fullName || 'Alex Morgan';
+  const fullName = getSetting('brandName') || profile?.fullName || 'Debkanta Dey';
   const title = getSetting('brandRole') || profile?.professionalTitle || 'Senior Full-Stack Engineer & Cloud Architect';
   const longBio =
     profile?.longBio ||

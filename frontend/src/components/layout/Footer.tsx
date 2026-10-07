@@ -11,7 +11,7 @@ export const Footer: React.FC = () => {
   const { getSetting } = useSettings();
   const [time, setTime] = useState<string>('');
 
-  const brandName = getSetting('brandName', 'Alex Morgan');
+  const brandName = getSetting('brandName', 'Debkanta Dey');
   const footerBio = getSetting(
     'footerBio',
     'Staff Full-Stack Software Engineer & Cloud Systems Architect. Crafting deterministic, fault-tolerant web applications and high-throughput microservices.'

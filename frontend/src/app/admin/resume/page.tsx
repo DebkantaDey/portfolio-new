@@ -81,7 +81,7 @@ const COLOR_THEMES = [
 ];
 
 const INITIAL_PORTFOLIO_DATA: PortfolioResumeData = {
-  fullName: 'Alex Morgan',
+  fullName: 'Debkanta Dey',
   professionalTitle: 'Senior Full-Stack Engineer & Cloud Architect',
   email: 'alex@alexmorgan.dev',
   phone: '+1 (415) 890-4211',
@@ -196,7 +196,7 @@ function ResumeTemplateThumbnail({ templateId }: { templateId: string }) {
             <span className="text-[5px] bg-slate-100 text-slate-600 px-1 rounded font-mono">Profile</span>
           </div>
           <div>
-            <div className="font-bold text-[7px] text-slate-900">ALEX MORGAN</div>
+            <div className="font-bold text-[7px] text-slate-900">Debkanta Dey</div>
             <div className="text-[5px] text-slate-500 truncate">alex@morgan.dev • SF, CA</div>
           </div>
           <div>
@@ -264,7 +264,7 @@ function ResumeTemplateThumbnail({ templateId }: { templateId: string }) {
           <div className="flex items-center gap-1">
             <div className="w-4 h-4 rounded-full bg-[#0F9A73] text-slate-950 font-bold text-[6px] flex items-center justify-center">AM</div>
             <div className="min-w-0">
-              <div className="font-bold text-[6.5px] truncate">Alex Morgan</div>
+              <div className="font-bold text-[6.5px] truncate">Debkanta Dey</div>
               <div className="text-[5px] text-slate-400 truncate">VP Architecture</div>
             </div>
           </div>
@@ -317,7 +317,7 @@ function ResumeTemplateThumbnail({ templateId }: { templateId: string }) {
       <div className="h-56 w-full bg-white rounded-xl border border-slate-200 p-2.5 overflow-hidden text-[6.5px] leading-tight select-none flex flex-col justify-start relative shadow-sm hover:border-[#0F9A73] transition-colors font-serif">
         {/* Harvard Serif Header */}
         <div className="text-center pb-1">
-          <div className="font-bold text-[9px] text-slate-900 uppercase tracking-widest">ALEX MORGAN</div>
+          <div className="font-bold text-[9px] text-slate-900 uppercase tracking-widest">Debkanta Dey</div>
           <div className="border-y border-slate-800 py-0.5 my-1 text-[6px] text-slate-700 italic">
             San Francisco, CA • alex@alexmorgan.dev • +1 (415) 890-4211
           </div>
@@ -419,7 +419,7 @@ function ResumeTemplateThumbnail({ templateId }: { templateId: string }) {
     <div className="h-56 w-full bg-white rounded-xl border border-slate-200 p-2.5 overflow-hidden text-[6.5px] leading-tight select-none flex flex-col justify-start relative shadow-sm hover:border-[#0F9A73] transition-colors">
       {/* Centered Header */}
       <div className="text-center pb-1">
-        <div className="font-bold text-[9px] text-slate-900 tracking-wider uppercase">ALEX MORGAN</div>
+        <div className="font-bold text-[9px] text-slate-900 tracking-wider uppercase">Debkanta Dey</div>
         <div className="text-[5.5px] text-slate-600 flex items-center justify-center gap-1 mt-0.5">
           <span>SF, CA</span>
           <span>•</span>

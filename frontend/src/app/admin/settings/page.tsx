@@ -299,9 +299,9 @@ export default function AdminSettingsPage() {
   const surfaceColor = formData.surfaceColor || '#f8fafd';
   const currentFont = formData.fontFamily || 'Inter';
 
-  const brandName = formData.brandName || 'Alex Morgan';
+  const brandName = formData.brandName || 'Debkanta Dey';
   const brandRole = formData.brandRole || 'Senior Full-Stack Architect';
-  const heroHeadline = formData.heroHeadline || 'Alex Morgan';
+  const heroHeadline = formData.heroHeadline || 'Debkanta Dey';
   const heroTitle = formData.heroTitle || 'Senior Full-Stack Engineer & Cloud Architect';
   const heroBio =
     formData.heroBio ||
@@ -748,7 +748,7 @@ export default function AdminSettingsPage() {
                     value={formData.siteName || ''}
                     onChange={(e) => handleFieldChange('siteName', e.target.value)}
                     className="w-full px-4 py-2.5 rounded-xl bg-[#f8fafd] border border-[#00007B]/15 text-sm text-[#00007B] focus:outline-none focus:ring-2 focus:ring-[#0F9A73] focus:bg-white"
-                    placeholder="Alex Morgan | Senior Full-Stack Engineer"
+                    placeholder="Debkanta Dey | Senior Full-Stack Engineer"
                   />
                   <span className="text-[11px] text-[#00007B]/50 mt-1 block">
                     Shown in the browser tab and search results.
@@ -765,7 +765,7 @@ export default function AdminSettingsPage() {
                       value={formData.brandName || ''}
                       onChange={(e) => handleFieldChange('brandName', e.target.value)}
                       className="w-full px-4 py-2.5 rounded-xl bg-[#f8fafd] border border-[#00007B]/15 text-sm text-[#00007B] focus:outline-none focus:ring-2 focus:ring-[#0F9A73] focus:bg-white"
-                      placeholder="Alex Morgan"
+                      placeholder="Debkanta Dey"
                     />
                   </div>
 
@@ -868,7 +868,7 @@ export default function AdminSettingsPage() {
                     value={formData.heroHeadline || ''}
                     onChange={(e) => handleFieldChange('heroHeadline', e.target.value)}
                     className="w-full px-4 py-2.5 rounded-xl bg-[#f8fafd] border border-[#00007B]/15 text-sm text-[#00007B] font-bold focus:outline-none focus:ring-2 focus:ring-[#0F9A73] focus:bg-white"
-                    placeholder="Alex Morgan"
+                    placeholder="Debkanta Dey"
                   />
                 </div>
 
@@ -1004,7 +1004,7 @@ export default function AdminSettingsPage() {
                     value={formData.footerCopyright || ''}
                     onChange={(e) => handleFieldChange('footerCopyright', e.target.value)}
                     className="w-full px-4 py-2.5 rounded-xl bg-[#f8fafd] border border-[#00007B]/15 text-sm text-[#00007B] focus:outline-none focus:ring-2 focus:ring-[#0F9A73] focus:bg-white"
-                    placeholder="© 2026 Alex Morgan. Built with Next.js, Node.js & PostgreSQL."
+                    placeholder="© 2026 Debkanta Dey. Built with Next.js, Node.js & PostgreSQL."
                   />
                 </div>
               </div>
@@ -1125,7 +1125,7 @@ export default function AdminSettingsPage() {
                     value={formData.seoMetaDescription || ''}
                     onChange={(e) => handleFieldChange('seoMetaDescription', e.target.value)}
                     className="w-full px-4 py-2.5 rounded-xl bg-[#f8fafd] border border-[#00007B]/15 text-sm text-[#00007B] focus:outline-none focus:ring-2 focus:ring-[#0F9A73] focus:bg-white leading-relaxed"
-                    placeholder="Production portfolio of Alex Morgan. Specializing in Next.js 15, TypeScript, Node.js, PostgreSQL, Docker, and distributed systems architecture."
+                    placeholder="Production portfolio of Debkanta Dey. Specializing in Next.js 15, TypeScript, Node.js, PostgreSQL, Docker, and distributed systems architecture."
                   />
                 </div>
 

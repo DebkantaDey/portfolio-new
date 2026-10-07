@@ -148,10 +148,10 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ profile }) => {
           {/* Right Column: Handcrafted Form */}
           <div className="lg:col-span-7">
             <div className="bg-white border-2 border-[#00007B]/15 rounded-3xl p-8 sm:p-10 shadow-xl">
-              <div className="flex items-center justify-between mb-6 pb-3 border-b border-[#00007B]/10">
+              {/* <div className="flex items-center justify-between mb-6 pb-3 border-b border-[#00007B]/10">
                 <h3 className="text-xl font-bold text-[#00007B]">Direct Message Transmission</h3>
                 <span className="text-[11px] font-mono text-[#0F9A73] font-bold bg-[#0F9A73]/10 px-2 py-0.5 rounded border border-[#0F9A73]/30">Encrypted / PostgreSQL</span>
-              </div>
+              </div> */}
 
               {status && (
                 <div

@@ -6,7 +6,7 @@ export const getInitialData = async () => {
   return {
     adminUser: {
       id: 'usr_admin_001',
-      name: 'Alex Morgan',
+      name: 'Debkanta Dey',
       email: 'admin@alexmorgan.dev',
       passwordHash: defaultPasswordHash,
       role: 'ADMIN',
@@ -16,7 +16,7 @@ export const getInitialData = async () => {
     },
     profile: {
       id: 'prof_001',
-      fullName: 'Alex Morgan',
+      fullName: 'Debkanta Dey',
       professionalTitle: 'Senior Full-Stack Engineer & Cloud Architect',
       shortBio: 'Engineering high-performance web platforms, resilient distributed backends, and modern developer tooling.',
       longBio: 'With over 7 years of full-stack engineering expertise, I specialize in crafting robust, scalable digital platforms using Next.js, TypeScript, Node.js, and PostgreSQL. I have architected systems processing millions of daily transactions, led multi-disciplinary agile teams, and built intuitive user interfaces with clean architecture and meticulous attention to UX.',
@@ -624,13 +624,13 @@ export const getInitialData = async () => {
       { id: 'soc_5', platform: 'Medium', url: 'https://medium.com', icon: 'FileText', isActive: true, displayOrder: 5 },
     ],
     websiteSettings: [
-      { id: 'set_1', key: 'siteName', value: 'Alex Morgan | Senior Full-Stack Engineer', description: 'Website title displayed in browser tab and hero' },
+      { id: 'set_1', key: 'siteName', value: 'Debkanta Dey | Senior Full-Stack Engineer', description: 'Website title displayed in browser tab and hero' },
       { id: 'set_2', key: 'primaryColor', value: '#0B1F3A', description: 'Primary brand color (Navy Blue)' },
       { id: 'set_3', key: 'accentColor', value: '#22D3EE', description: 'Accent color (Electric Cyan / Teal)' },
       { id: 'set_4', key: 'contactEmail', value: 'alex@alexmorgan.dev', description: 'Official email address for contact routing' },
       { id: 'set_5', key: 'contactPhone', value: '+1 (415) 890-4211', description: 'Official contact phone number' },
       { id: 'set_6', key: 'location', value: 'San Francisco, CA (Open to Worldwide Remote)', description: 'Developer base location' },
-      { id: 'set_7', key: 'footerCopyright', value: '© 2026 Alex Morgan. Built with Next.js, Node.js & PostgreSQL.', description: 'Footer copyright note' },
+      { id: 'set_7', key: 'footerCopyright', value: '© 2026 Debkanta Dey. Built with Next.js, Node.js & PostgreSQL.', description: 'Footer copyright note' },
       { id: 'set_8', key: 'maintenanceMode', value: 'false', description: 'Set to true to activate maintenance screen' },
       { id: 'set_9', key: 'googleAnalyticsId', value: '', description: 'Optional GA4 Measurement ID' }
     ]

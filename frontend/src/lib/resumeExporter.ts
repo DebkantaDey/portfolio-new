@@ -411,7 +411,7 @@ export function exportResumeAsDocx(
     <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
       <head>
         <meta charset="utf-8">
-        <title>${data.fullName || 'Alex Morgan'} Resume</title>
+        <title>${data.fullName || 'Debkanta Dey'} Resume</title>
         <!--[if gte mso 9]>
         <xml>
           <w:WordDocument>
@@ -460,7 +460,7 @@ export function exportResumeAsDocx(
       <body>
         <!-- Header -->
         <div style="text-align: center; margin-bottom: 10pt;">
-          <h1>${data.fullName || 'Alex Morgan'}</h1>
+          <h1>${data.fullName || 'Debkanta Dey'}</h1>
           <p style="font-size: 11pt; color: #0284c7; font-weight: 600; margin-bottom: 3pt;">
             ${data.professionalTitle || 'Senior Full-Stack Architect & Cloud Systems Engineer'}
           </p>

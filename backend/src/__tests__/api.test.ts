@@ -96,12 +96,12 @@ describe('Portfolio REST API Test Suite', () => {
       .put('/api/profile')
       .set('Authorization', `Bearer ${adminToken}`)
       .send({
-        fullName: 'Alex Morgan',
+        fullName: 'Debkanta Dey',
         professionalTitle: 'Principal Full-Stack Architect',
         shortBio: 'Updated bio for testing purposes',
         longBio: 'Updated long bio for testing purposes with sufficient length',
         location: 'San Francisco, CA',
-        email: 'alex@alexmorgan.dev',
+        email: 'debkanta@debkanta.dev',
         availabilityStatus: 'Open for consulting',
         yearsOfExperience: 8,
       });

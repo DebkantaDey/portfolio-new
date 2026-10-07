@@ -8,7 +8,7 @@ const swaggerDocument = {
     version: '1.0.0',
     description: 'Production-ready REST API for personal portfolio website and admin content management platform.',
     contact: {
-      name: 'Alex Morgan',
+      name: 'Debkanta Dey',
       email: 'alex@alexmorgan.dev',
     },
   },

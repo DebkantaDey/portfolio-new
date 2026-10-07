@@ -25,7 +25,7 @@ export const Navbar: React.FC = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const pathname = usePathname();
 
-  const brandName = getSetting('brandName', 'Alex Morgan');
+  const brandName = getSetting('brandName', 'Debkanta Dey');
   const brandRole = getSetting('brandRole', 'Senior Full-Stack Architect');
   const availability = getSetting('availabilityStatus', 'Available for hire');
 

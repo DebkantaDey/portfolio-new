@@ -38,14 +38,14 @@ export async function generateMetadata(): Promise<Metadata> {
   const full = { ...DEFAULT_SETTINGS, ...settings };
 
   return {
-    title: full.siteName || 'Alex Morgan | Senior Full-Stack Engineer & Cloud Architect',
+    title: full.siteName || 'Debkanta Dey | Senior Full-Stack Engineer & Cloud Architect',
     description:
       full.seoMetaDescription ||
-      'Production portfolio of Alex Morgan. Specializing in Next.js 15, TypeScript, Node.js, PostgreSQL, Docker, and distributed systems architecture.',
+      'Production portfolio of Debkanta Dey. Specializing in Next.js 15, TypeScript, Node.js, PostgreSQL, Docker, and distributed systems architecture.',
     keywords: full.seoKeywords
       ? full.seoKeywords.split(',').map((k) => k.trim())
       : [
-          'Alex Morgan',
+          'Debkanta Dey',
           'Full-Stack Developer',
           'Software Architect',
           'Next.js',
@@ -54,9 +54,9 @@ export async function generateMetadata(): Promise<Metadata> {
           'PostgreSQL',
           'Cloud Architecture',
         ],
-    authors: [{ name: full.brandName || 'Alex Morgan', url: 'https://alexmorgan.dev' }],
+    authors: [{ name: full.brandName || 'Debkanta Dey', url: 'https://alexmorgan.dev' }],
     openGraph: {
-      title: full.siteName || 'Alex Morgan | Senior Full-Stack Engineer & Cloud Architect',
+      title: full.siteName || 'Debkanta Dey | Senior Full-Stack Engineer & Cloud Architect',
       description:
         full.seoMetaDescription ||
         'Explore production systems, case studies, technical competencies, and career opportunities.',

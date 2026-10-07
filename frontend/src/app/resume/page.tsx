@@ -60,7 +60,7 @@ export default function ResumePage() {
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div>
                 <h1 className="text-3xl font-extrabold text-[#00007B]">
-                  {getSetting('brandName') || profile?.fullName || 'Alex Morgan'}
+                  {getSetting('brandName') || profile?.fullName || 'Debkanta Dey'}
                 </h1>
                 <p className="text-base font-bold text-[#0F9A73] font-mono mt-1">
                   {getSetting('brandRole') || profile?.professionalTitle || 'Senior Full-Stack Engineer & Cloud Architect'}

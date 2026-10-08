@@ -50,15 +50,15 @@ export default function AdminLoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-white flex flex-col justify-center items-center p-4 relative overflow-hidden bg-grid">
+    <div className="min-h-screen bg-white dark:bg-[#0a0e1a] flex flex-col justify-center items-center p-4 relative overflow-hidden bg-grid transition-colors duration-200">
       {/* Ambient background glow in #0F9A73 */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[550px] h-[550px] bg-[#0F9A73]/10 rounded-full blur-[140px] pointer-events-none" />
 
-      <div className="w-full max-w-md bg-white border-2 border-[#00007B]/15 rounded-3xl p-8 sm:p-10 shadow-2xl relative z-10">
+      <div className="w-full max-w-md bg-white dark:bg-[#111827] border-2 border-[#00007B]/15 dark:border-white/10 rounded-3xl p-8 sm:p-10 shadow-2xl relative z-10">
         
         {/* Brand Logo & Back to Home */}
         <div className="flex items-center justify-between mb-8">
-          <Link href="/" className="inline-flex items-center gap-2 text-xs font-mono text-[#00007B] hover:text-[#0F9A73] font-bold">
+          <Link href="/" className="inline-flex items-center gap-2 text-xs font-mono text-[#00007B] dark:text-slate-300 hover:text-[#0F9A73] font-bold">
             <span>&larr; Back to Portfolio</span>
           </Link>
           <span className="flex items-center gap-1.5 text-[11px] font-mono text-[#0F9A73] font-bold">

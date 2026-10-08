@@ -19,7 +19,7 @@ export function Providers({ children, initialSettings }: ProvidersProps) {
         <ToastProvider>
           {children}
           <CommandPalette />
-          <Toaster position="bottom-right" richColors theme="dark" />
+          <Toaster position="bottom-right" richColors />
         </ToastProvider>
       </SettingsProvider>
     </NextThemesProvider>

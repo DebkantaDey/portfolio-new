@@ -46,18 +46,18 @@ export const Footer: React.FC = () => {
   if (pathname.startsWith('/admin')) return null;
 
   return (
-    <footer className="bg-[#f8fafd] border-t border-[#00007B]/10 text-[#00007B]/80 pt-16 pb-12 font-sans">
+    <footer className="bg-[#f8fafd] dark:bg-[#070a12] border-t border-[#00007B]/10 dark:border-white/10 text-[#00007B]/80 dark:text-slate-300 pt-16 pb-12 font-sans transition-colors duration-200">
       <div className="w-full lg:w-[80%] lg:max-w-none mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 pb-12 border-b border-[#00007B]/10">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 pb-12 border-b border-[#00007B]/10 dark:border-white/10">
           {/* Column 1: Brand & Bio */}
           <div className="lg:col-span-2 space-y-4">
             <Link href="/" className="flex items-center gap-2.5 group">
               <div className="w-9 h-9 rounded-xl bg-[#00007B] border border-[#0F9A73]/50 flex items-center justify-center text-white shadow-sm group-hover:scale-105 transition-all">
                 <Terminal className="w-4 h-4 text-[#0F9A73]" />
               </div>
-              <span className="text-lg font-bold tracking-tight text-[#00007B]">{brandName}</span>
+              <span className="text-lg font-bold tracking-tight text-[#00007B] dark:text-white">{brandName}</span>
             </Link>
-            <p className="text-sm leading-relaxed text-[#00007B]/80 max-w-sm">
+            <p className="text-sm leading-relaxed text-[#00007B]/80 dark:text-slate-300 max-w-sm">
               {footerBio}
             </p>
 
@@ -68,7 +68,7 @@ export const Footer: React.FC = () => {
                 <span>{footerStatusText}</span>
               </div>
               {time && (
-                <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white border border-[#00007B]/10 text-[#00007B] shadow-sm">
+                <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white dark:bg-[#131c31] border border-[#00007B]/10 dark:border-white/10 text-[#00007B] dark:text-slate-200 shadow-sm">
                   <Clock className="w-3 h-3 text-[#0F9A73]" />
                   <span>{time} PST (SF)</span>
                 </div>
@@ -81,7 +81,7 @@ export const Footer: React.FC = () => {
                 href="https://github.com/alexmorgan"
                 target="_blank"
                 rel="noreferrer"
-                className="w-8 h-8 rounded-lg bg-white border border-[#00007B]/15 flex items-center justify-center text-[#00007B] hover:text-[#0F9A73] hover:border-[#0F9A73] transition-colors shadow-sm"
+                className="w-8 h-8 rounded-lg bg-white dark:bg-[#131c31] border border-[#00007B]/15 dark:border-white/15 flex items-center justify-center text-[#00007B] dark:text-slate-200 hover:text-[#0F9A73] hover:border-[#0F9A73] transition-colors shadow-sm"
                 aria-label="GitHub Profile"
               >
                 <Github className="w-4 h-4" />
@@ -90,7 +90,7 @@ export const Footer: React.FC = () => {
                 href="https://linkedin.com/in/alexmorgan-dev"
                 target="_blank"
                 rel="noreferrer"
-                className="w-8 h-8 rounded-lg bg-white border border-[#00007B]/15 flex items-center justify-center text-[#00007B] hover:text-[#0F9A73] hover:border-[#0F9A73] transition-colors shadow-sm"
+                className="w-8 h-8 rounded-lg bg-white dark:bg-[#131c31] border border-[#00007B]/15 dark:border-white/15 flex items-center justify-center text-[#00007B] dark:text-slate-200 hover:text-[#0F9A73] hover:border-[#0F9A73] transition-colors shadow-sm"
                 aria-label="LinkedIn Profile"
               >
                 <Linkedin className="w-4 h-4" />
@@ -99,14 +99,14 @@ export const Footer: React.FC = () => {
                 href="https://twitter.com/alexmorgandev"
                 target="_blank"
                 rel="noreferrer"
-                className="w-8 h-8 rounded-lg bg-white border border-[#00007B]/15 flex items-center justify-center text-[#00007B] hover:text-[#0F9A73] hover:border-[#0F9A73] transition-colors shadow-sm"
+                className="w-8 h-8 rounded-lg bg-white dark:bg-[#131c31] border border-[#00007B]/15 dark:border-white/15 flex items-center justify-center text-[#00007B] dark:text-slate-200 hover:text-[#0F9A73] hover:border-[#0F9A73] transition-colors shadow-sm"
                 aria-label="Twitter Profile"
               >
                 <Twitter className="w-4 h-4" />
               </a>
               <a
                 href={`mailto:${contactEmail}`}
-                className="w-8 h-8 rounded-lg bg-white border border-[#00007B]/15 flex items-center justify-center text-[#00007B] hover:text-[#0F9A73] hover:border-[#0F9A73] transition-colors shadow-sm"
+                className="w-8 h-8 rounded-lg bg-white dark:bg-[#131c31] border border-[#00007B]/15 dark:border-white/15 flex items-center justify-center text-[#00007B] dark:text-slate-200 hover:text-[#0F9A73] hover:border-[#0F9A73] transition-colors shadow-sm"
                 aria-label="Email Me"
               >
                 <Mail className="w-4 h-4" />

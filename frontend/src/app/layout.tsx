@@ -105,10 +105,10 @@ export default async function RootLayout({
           }}
         />
       </head>
-      <body className="min-h-screen flex flex-col bg-white text-[#00007B] antialiased selection:bg-[#0F9A73] selection:text-white">
+      <body className="min-h-screen flex flex-col bg-white dark:bg-[#0a0e1a] text-[#00007B] dark:text-[#f8fafc] antialiased selection:bg-[#0F9A73] selection:text-white transition-colors duration-200">
         <Providers initialSettings={fullSettings}>
           <Navbar />
-          <main className="flex-1 bg-white">{children}</main>
+          <main className="flex-1 bg-white dark:bg-[#0a0e1a] transition-colors duration-200">{children}</main>
           <Footer />
         </Providers>
       </body>

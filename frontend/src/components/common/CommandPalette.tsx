@@ -33,7 +33,9 @@ export const CommandPalette: React.FC = () => {
   const [search, setSearch] = useState('');
   const [selectedIndex, setSelectedIndex] = useState(0);
   const router = useRouter();
-  const { theme, setTheme } = useTheme();
+  const { theme, resolvedTheme, setTheme } = useTheme();
+  const currentTheme = resolvedTheme || theme;
+  const isDark = currentTheme === 'dark';
 
   const commands: CommandItem[] = [
     {
@@ -93,10 +95,10 @@ export const CommandPalette: React.FC = () => {
     },
     {
       id: 'theme',
-      title: theme === 'dark' ? 'Switch to Light Theme' : 'Switch to Dark Theme',
+      title: isDark ? 'Switch to Light Theme' : 'Switch to Dark Theme',
       category: 'Actions',
-      icon: theme === 'dark' ? <Sun className="w-4 h-4 text-amber-300" /> : <Moon className="w-4 h-4 text-[#0F9A73]" />,
-      action: () => setTheme(theme === 'dark' ? 'light' : 'dark'),
+      icon: isDark ? <Sun className="w-4 h-4 text-amber-300" /> : <Moon className="w-4 h-4 text-[#0F9A73]" />,
+      action: () => setTheme(isDark ? 'light' : 'dark'),
       shortcut: 'T',
     },
     {

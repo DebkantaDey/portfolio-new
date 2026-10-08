@@ -61,15 +61,15 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({ onCloseMobile }) => 
   };
 
   return (
-    <div className="w-full h-full flex flex-col bg-white">
+    <div className="w-full h-full flex flex-col bg-white dark:bg-[#0e1424] transition-colors duration-200">
       {/* Brand Header */}
-      <div className="h-16 px-4 border-b border-[#00007B]/10 flex items-center justify-between shrink-0">
+      <div className="h-16 px-4 border-b border-[#00007B]/10 dark:border-white/10 flex items-center justify-between shrink-0">
         <Link href="/admin" className="flex items-center gap-2.5">
           <div className="w-8 h-8 rounded-lg bg-[#00007B] flex items-center justify-center text-white shadow-sm">
             <Terminal className="w-4 h-4 text-[#0F9A73]" />
           </div>
           <div>
-            <span className="text-sm font-bold text-[#00007B] tracking-tight">Admin Console</span>
+            <span className="text-sm font-bold text-[#00007B] dark:text-white tracking-tight">Admin Console</span>
             <span className="block text-[10px] font-mono text-[#0F9A73] font-bold">Portfolio CMS</span>
           </div>
         </Link>
@@ -89,11 +89,11 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({ onCloseMobile }) => 
                 'flex items-center justify-between px-3 py-1.5 rounded-lg text-xs font-semibold transition-all group',
                 isActive
                   ? 'bg-[#0F9A73] text-white shadow-sm font-bold'
-                  : 'text-[#00007B]/80 hover:text-[#00007B] hover:bg-[#f8fafd]'
+                  : 'text-[#00007B]/80 dark:text-slate-300 hover:text-[#00007B] dark:hover:text-white hover:bg-[#f8fafd] dark:hover:bg-[#162036]'
               )}
             >
               <div className="flex items-center gap-2.5 min-w-0">
-                <Icon className={cn('w-4 h-4 shrink-0', isActive ? 'text-white' : 'text-[#00007B]/60 group-hover:text-[#0F9A73]')} />
+                <Icon className={cn('w-4 h-4 shrink-0', isActive ? 'text-white' : 'text-[#00007B]/60 dark:text-slate-400 group-hover:text-[#0F9A73]')} />
                 <span className="truncate">{item.label}</span>
               </div>
               {isActive && <ChevronRight className="w-3.5 h-3.5 text-white shrink-0" />}
@@ -103,11 +103,11 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({ onCloseMobile }) => 
       </div>
 
       {/* Footer Controls */}
-      <div className="p-3 border-t border-[#00007B]/10 space-y-1.5 shrink-0 bg-white">
+      <div className="p-3 border-t border-[#00007B]/10 dark:border-white/10 space-y-1.5 shrink-0 bg-white dark:bg-[#0e1424]">
         <Link
           href="/"
           target="_blank"
-          className="flex items-center justify-between px-3 py-1.5 rounded-lg text-xs font-semibold text-[#00007B]/80 hover:text-[#0F9A73] hover:bg-[#f8fafd] transition-colors"
+          className="flex items-center justify-between px-3 py-1.5 rounded-lg text-xs font-semibold text-[#00007B]/80 dark:text-slate-300 hover:text-[#0F9A73] hover:bg-[#f8fafd] dark:hover:bg-[#162036] transition-colors"
         >
           <span className="flex items-center gap-2">
             <ExternalLink className="w-4 h-4 text-[#0F9A73]" />
@@ -116,7 +116,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({ onCloseMobile }) => 
         </Link>
         <button
           onClick={handleLogout}
-          className="w-full flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-semibold text-rose-600 hover:text-rose-700 hover:bg-rose-50 transition-colors"
+          className="w-full flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-semibold text-rose-600 hover:text-rose-700 hover:bg-rose-50 dark:hover:bg-rose-950/30 transition-colors"
         >
           <LogOut className="w-4 h-4" />
           <span>Sign Out</span>

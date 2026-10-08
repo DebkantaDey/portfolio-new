@@ -34,9 +34,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   }
 
   return (
-    <div className="min-h-screen bg-[#f8fafd]">
+    <div className="min-h-screen bg-[#f8fafd] dark:bg-[#0a0e1a] transition-colors duration-200">
       {/* Desktop Fixed Sidebar on Left */}
-      <aside className="hidden lg:block fixed top-0 left-0 bottom-0 w-64 h-screen z-30 bg-white border-r border-[#00007B]/15">
+      <aside className="hidden lg:block fixed top-0 left-0 bottom-0 w-64 h-screen z-30 bg-white dark:bg-[#0e1424] border-r border-[#00007B]/15 dark:border-white/10">
         <AdminSidebar />
       </aside>
 
@@ -44,10 +44,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       {mobileSidebarOpen && (
         <div className="fixed inset-0 z-50 lg:hidden flex">
           <div
-            className="fixed inset-0 bg-[#00007B]/40 backdrop-blur-sm"
+            className="fixed inset-0 bg-black/60 backdrop-blur-sm"
             onClick={() => setMobileSidebarOpen(false)}
           />
-          <div className="relative z-10 w-64 h-screen bg-white shadow-2xl border-r border-[#00007B]/15">
+          <div className="relative z-10 w-64 h-screen bg-white dark:bg-[#0e1424] shadow-2xl border-r border-[#00007B]/15 dark:border-white/10">
             <AdminSidebar onCloseMobile={() => setMobileSidebarOpen(false)} />
           </div>
         </div>
@@ -56,7 +56,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       {/* Main Content Area (Offset by 64 on lg screens) */}
       <div className="lg:pl-64 flex flex-col min-h-screen">
         <AdminHeader onToggleSidebar={() => setMobileSidebarOpen(!mobileSidebarOpen)} />
-        <main className="flex-1 p-4 sm:p-6 lg:p-8 w-full lg:w-[80%] lg:max-w-none mx-auto">
+        <main className="flex-1 p-4 sm:p-6 lg:p-8 w-full lg:w-[80%] lg:max-w-none mx-auto bg-[#f8fafd] dark:bg-[#0a0e1a]">
           {children}
         </main>
       </div>

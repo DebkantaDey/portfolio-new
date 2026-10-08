@@ -8,12 +8,14 @@ export interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
 export const Card = React.forwardRef<HTMLDivElement, CardProps>(
   ({ className, variant = 'default', children, ...props }, ref) => {
     const variants = {
-      default: 'bg-navy-900/90 border border-navy-800 text-slate-100 rounded-2xl p-6 shadow-sm',
+      default:
+        'bg-white dark:bg-[#111827] border border-[#00007B]/15 dark:border-white/10 text-[#00007B] dark:text-slate-100 rounded-2xl p-6 shadow-sm transition-all',
       glass:
-        'bg-navy-900/60 backdrop-blur-md border border-navy-700/60 text-slate-100 rounded-2xl p-6 shadow-md',
+        'bg-white/90 dark:bg-[#111827]/80 backdrop-blur-md border border-[#00007B]/15 dark:border-white/10 text-[#00007B] dark:text-slate-100 rounded-2xl p-6 shadow-md transition-all',
       interactive:
-        'bg-navy-900/90 border border-navy-800 hover:border-cyan/50 hover:shadow-glow transition-all duration-300 text-slate-100 rounded-2xl p-6 group cursor-pointer',
-      outline: 'bg-transparent border border-navy-800 text-slate-100 rounded-2xl p-6',
+        'bg-white dark:bg-[#111827] border border-[#00007B]/15 dark:border-white/10 hover:border-[#0F9A73]/60 hover:shadow-glow transition-all duration-300 text-[#00007B] dark:text-slate-100 rounded-2xl p-6 group cursor-pointer',
+      outline:
+        'bg-transparent border border-[#00007B]/20 dark:border-white/15 text-[#00007B] dark:text-slate-100 rounded-2xl p-6 transition-all',
     };
 
     return (

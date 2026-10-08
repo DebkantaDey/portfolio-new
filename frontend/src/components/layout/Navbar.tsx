@@ -78,7 +78,7 @@ export const Navbar: React.FC = () => {
           </Link>
 
           {/* Desktop Navigation Links */}
-          <nav className="hidden lg:flex items-center gap-1 bg-[#f0f4fc] border border-[#00007B]/10 px-3 py-1.5 rounded-full shadow-inner">
+          <nav className="hidden lg:flex items-center gap-1 bg-[#f0f4fc] dark:bg-[#131c31] border border-[#00007B]/10 dark:border-white/10 px-3 py-1.5 rounded-full shadow-inner">
             {navLinks.map((link) => {
               const isActive = pathname === link.href || (link.href !== '/' && pathname.startsWith(link.href));
               return (
@@ -89,7 +89,7 @@ export const Navbar: React.FC = () => {
                     'px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all',
                     isActive
                       ? 'bg-[#00007B] text-white shadow-sm'
-                      : 'text-[#00007B]/80 hover:text-[#00007B] hover:bg-white'
+                      : 'text-[#00007B]/80 hover:text-[#00007B] hover:bg-white dark:text-slate-300 dark:hover:text-white dark:hover:bg-white/10'
                   )}
                 >
                   {link.label}
@@ -104,12 +104,12 @@ export const Navbar: React.FC = () => {
             <button
               onClick={triggerCommandPalette}
               type="button"
-              className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#f0f4fc] hover:bg-white border border-[#00007B]/15 text-xs text-[#00007B] transition-all font-mono shadow-sm"
+              className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#f0f4fc] dark:bg-[#131c31] hover:bg-white dark:hover:bg-[#1e293b] border border-[#00007B]/15 dark:border-white/15 text-xs text-[#00007B] dark:text-slate-200 transition-all font-mono shadow-sm"
               title="Search commands (Cmd+K)"
             >
               <Search className="w-3.5 h-3.5 text-[#0F9A73]" />
-              <span className="hidden md:inline text-[11px] text-[#00007B]/70">Search</span>
-              <kbd className="inline-flex items-center gap-0.5 px-1.5 py-0.5 text-[10px] rounded bg-white text-[#00007B] border border-[#00007B]/15">
+              <span className="hidden md:inline text-[11px] text-[#00007B]/70 dark:text-slate-400">Search</span>
+              <kbd className="inline-flex items-center gap-0.5 px-1.5 py-0.5 text-[10px] rounded bg-white dark:bg-[#1e293b] text-[#00007B] dark:text-slate-200 border border-[#00007B]/15 dark:border-white/15">
                 <Command className="w-3 h-3" />K
               </kbd>
             </button>
@@ -117,7 +117,7 @@ export const Navbar: React.FC = () => {
             <ThemeToggle />
 
             <Link href="/resume">
-              <Button variant="outline" size="sm" className="hidden md:inline-flex border-[#00007B]/20 text-[#00007B] hover:bg-[#f0f4fc] hover:border-[#00007B]">
+              <Button variant="outline" size="sm" className="hidden md:inline-flex border-[#00007B]/20 dark:border-white/20 text-[#00007B] dark:text-slate-100 hover:bg-[#f0f4fc] dark:hover:bg-[#1e293b] hover:border-[#00007B]">
                 <Download className="w-3.5 h-3.5 mr-1 text-[#0F9A73]" />
                 Resume
               </Button>
@@ -134,7 +134,7 @@ export const Navbar: React.FC = () => {
           <div className="flex items-center gap-2 sm:hidden">
             <button
               onClick={triggerCommandPalette}
-              className="p-2 rounded-lg bg-[#f0f4fc] border border-[#00007B]/15 text-[#0F9A73]"
+              className="p-2 rounded-lg bg-[#f0f4fc] dark:bg-[#131c31] border border-[#00007B]/15 dark:border-white/15 text-[#0F9A73]"
               aria-label="Search"
             >
               <Search className="w-4 h-4" />
@@ -142,10 +142,10 @@ export const Navbar: React.FC = () => {
             <ThemeToggle />
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="p-2 rounded-lg bg-[#f0f4fc] border border-[#00007B]/15 text-[#00007B] hover:text-[#0F9A73] focus:outline-none"
+              className="p-2 rounded-lg bg-[#f0f4fc] dark:bg-[#131c31] border border-[#00007B]/15 dark:border-white/15 text-[#00007B] dark:text-slate-200 hover:text-[#0F9A73] focus:outline-none"
               aria-label="Toggle navigation menu"
             >
-              {mobileMenuOpen ? <X className="w-5 h-5 text-[#00007B]" /> : <Menu className="w-5 h-5 text-[#00007B]" />}
+              {mobileMenuOpen ? <X className="w-5 h-5 text-[#00007B] dark:text-slate-200" /> : <Menu className="w-5 h-5 text-[#00007B] dark:text-slate-200" />}
             </button>
           </div>
         </div>
@@ -153,7 +153,7 @@ export const Navbar: React.FC = () => {
 
       {/* Mobile Animated Drawer */}
       {mobileMenuOpen && (
-        <div className="sm:hidden fixed inset-x-0 top-[65px] bg-white border-b border-[#00007B]/15 p-6 shadow-2xl transition-all">
+        <div className="sm:hidden fixed inset-x-0 top-[65px] bg-white dark:bg-[#0b0f19] border-b border-[#00007B]/15 dark:border-white/15 p-6 shadow-2xl transition-all">
           <nav className="flex flex-col gap-1.5">
             {navLinks.map((link) => {
               const isActive = pathname === link.href;
@@ -166,7 +166,7 @@ export const Navbar: React.FC = () => {
                     'px-4 py-3 rounded-xl text-sm font-semibold transition-colors flex items-center justify-between',
                     isActive
                       ? 'bg-[#00007B] text-white'
-                      : 'text-[#00007B] hover:bg-[#f0f4fc]'
+                      : 'text-[#00007B] dark:text-slate-200 hover:bg-[#f0f4fc] dark:hover:bg-[#162036]'
                   )}
                 >
                   {link.label}
@@ -174,9 +174,9 @@ export const Navbar: React.FC = () => {
                 </Link>
               );
             })}
-            <div className="pt-4 mt-2 border-t border-[#00007B]/10 flex flex-col gap-2.5">
+            <div className="pt-4 mt-2 border-t border-[#00007B]/10 dark:border-white/10 flex flex-col gap-2.5">
               <Link href="/resume" onClick={() => setMobileMenuOpen(false)}>
-                <Button variant="outline" size="md" className="w-full justify-center border-[#00007B]/20 text-[#00007B]">
+                <Button variant="outline" size="md" className="w-full justify-center border-[#00007B]/20 dark:border-white/20 text-[#00007B] dark:text-slate-200">
                   <Download className="w-4 h-4 mr-2 text-[#0F9A73]" />
                   View &amp; Download Resume
                 </Button>

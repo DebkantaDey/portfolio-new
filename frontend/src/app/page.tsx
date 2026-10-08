@@ -127,7 +127,7 @@ export default function HomePage() {
       <AchievementsSection achievements={achievements} />
 
       {/* 13. Testimonials */}
-      <TestimonialsSection testimonials={testimonials} />
+      {/* <TestimonialsSection testimonials={testimonials} /> */}
 
       {/* 14. Resume CTA */}
       <ResumeCTA resumeUrl={profile?.resumeUrl} />

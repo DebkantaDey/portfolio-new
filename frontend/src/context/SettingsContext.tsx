@@ -96,15 +96,15 @@ export const SettingsProvider: React.FC<SettingsProviderProps> = ({
     root.style.setProperty('--primary-navy', primaryColor);
     root.style.setProperty('--accent-color', accentColor);
     root.style.setProperty('--accent-cyan', accentColor);
-    root.style.setProperty('--background', backgroundColor);
-    root.style.setProperty('--background-color', backgroundColor);
-    root.style.setProperty('--foreground', textColor);
-    root.style.setProperty('--text-color', textColor);
-    root.style.setProperty('--surface-color', surfaceColor);
-    root.style.setProperty('--site-surface', surfaceColor);
     root.style.setProperty('--primary-contrast', primaryContrast);
     root.style.setProperty('--accent-contrast', accentContrast);
-    root.style.setProperty('--border-subtle', hexToRgba(primaryColor, 0.15));
+    root.style.removeProperty('--background');
+    root.style.removeProperty('--background-color');
+    root.style.removeProperty('--foreground');
+    root.style.removeProperty('--text-color');
+    root.style.removeProperty('--surface-color');
+    root.style.removeProperty('--site-surface');
+    root.style.removeProperty('--border-subtle');
 
     // 2. Load Google Font dynamically if not System
     const fontUrl = getGoogleFontUrl(fontName);
